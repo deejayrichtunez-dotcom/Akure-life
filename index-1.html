@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Akure Life — World Build</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#070b10;--panel:#0e151d;--panel2:#141e28;--line:#263442;
+  --text:#f4f7fa;--muted:#91a1b1;--gold:#f3b83f;--green:#42d889;
+  --red:#ff6464;--cyan:#57c7ff;--shadow:0 20px 60px #0008
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}.app{min-height:100vh}.top{height:70px;position:sticky;top:0;z-index:50;background:#070b10eF;border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+.topin{height:100%;max-width:1400px;margin:auto;display:flex;align-items:center;gap:18px;padding:0 16px}
+.logo{font-weight:950;letter-spacing:.12em;font-size:16px;white-space:nowrap}.logo b{color:var(--gold)}
+.hud{display:flex;gap:8px;overflow:auto;flex:1}.chip{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:7px 10px;min-width:82px}.chip small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}.chip strong{font-size:13px}
+.wrap{max-width:1400px;margin:auto;padding:14px}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.75fr);gap:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.body{padding:14px}
+.world{height:620px;position:relative;overflow:hidden;background:#152a20}
+canvas{display:block;width:100%;height:100%}
+.worldui{position:absolute;inset:0;pointer-events:none}.place{position:absolute;top:16px;left:16px;background:#070b10d9;border:1px solid #ffffff18;border-radius:14px;padding:12px 14px;backdrop-filter:blur(8px)}.place h1{margin:0;font-size:25px}.place p{margin:3px 0 0;color:#c0cbd5;font-size:12px}
+.objective{position:absolute;top:16px;right:16px;width:230px;background:#070b10d9;border:1px solid #ffffff18;border-radius:14px;padding:12px}.objective small{color:var(--muted);display:block;text-transform:uppercase;font-size:9px;letter-spacing:.1em}.objective b{display:block;margin-top:4px}.objective span{display:block;color:#b7c4cf;font-size:11px;margin-top:5px}
+.playerbadge{position:absolute;left:50%;bottom:19%;transform:translateX(-50%);background:#070b10e8;border:1px solid #ffffff22;border-radius:30px;padding:5px 10px;font-size:11px;white-space:nowrap}
+.playerdot{position:absolute;left:50%;bottom:24%;transform:translate(-50%,50%);width:38px;height:52px;filter:drop-shadow(0 8px 8px #0008)}.head{width:25px;height:25px;border-radius:50%;background:#75482e;border:2px solid #22130d;margin:auto}.bodyp{width:30px;height:27px;border-radius:9px 9px 5px 5px;background:var(--gold);margin:1px auto}.legs{width:25px;height:10px;background:#1d2631;border-radius:0 0 6px 6px;margin:auto}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.btn{border:1px solid var(--line);background:#15202b;color:var(--text);border-radius:11px;padding:11px 10px;font-weight:800}.btn:hover{border-color:#5c7185}.btn.primary{background:var(--gold);color:#1b1303;border-color:#ffd56b}.btn.green{background:#123d29;border-color:#266c49}.btn.small{padding:7px 9px;font-size:12px}.btn.danger{background:#401a1e;border-color:#713139}
+.tabs{display:flex;gap:7px;overflow:auto}.tab{white-space:nowrap}.locationgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.loc{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}.loc b{display:block}.loc small{color:var(--muted);font-size:11px}
+.stat{margin:7px 0}.statline{display:flex;justify-content:space-between;font-size:12px}.bar{height:8px;border-radius:99px;background:#222d37;overflow:hidden;margin-top:4px}.fill{height:100%;background:var(--green)}
+.feed{max-height:250px;overflow:auto;display:grid;gap:7px}.msg{padding:8px 9px;border-radius:10px;background:#121b24;font-size:12px}.msg b{color:var(--gold)}.msg i{color:var(--muted);font-size:10px}
+.chat{display:flex;gap:7px;margin-top:8px}.chat input{flex:1}
+input,select{width:100%;background:#091017;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px}
+.rank{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+.toast{position:fixed;right:14px;bottom:14px;z-index:100;background:#0e151d;border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);max-width:340px}
+.modal{position:fixed;inset:0;background:#000b;z-index:90;display:grid;place-items:center;padding:18px}.modalbox{width:min(650px,100%);max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:17px}
+.job{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}.job small{display:block;color:var(--muted);margin-top:3px}.muted{color:var(--muted)}.notice{padding:10px;border-radius:11px;background:#111a23;border:1px solid var(--line);font-size:12px}.notice strong{color:var(--gold)}
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#46310c 0,#0a1016 45%,#05070a 100%)}.authbox{width:min(480px,100%);background:#0c1219ee;border:1px solid var(--line);border-radius:22px;padding:25px;box-shadow:0 35px 120px #000b}.authbox h1{font-size:44px;line-height:.95;margin:14px 0}.authbox h1 span{color:var(--gold)}.field{margin:10px 0}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:5px;text-transform:uppercase}.authactions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.world{height:560px}.actions{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.wrap{padding:8px}.top{height:auto}.topin{padding:9px;align-items:flex-start}.hud{display:grid;grid-template-columns:repeat(3,1fr)}.chip{min-width:0}.logo{padding-top:9px}.world{height:470px}.objective{width:175px}.locationgrid{grid-template-columns:1fr}.actions{grid-template-columns:repeat(2,1fr)}.place h1{font-size:21px}}
+</style>
+</head>
+<body>
+<div id="auth" class="auth">
+  <div class="authbox">
+    <div class="logo">AKURE <b>LIFE</b></div>
+    <h1>THIS IS<br><span>YOUR CITY.</span></h1>
+    <p class="muted">A multiplayer life in Akure. Work. Hustle. Explore. Build.</p>
+    <div id="authMsg" class="notice hidden"></div>
+    <div class="field"><label>Username</label><input id="u" autocomplete="username" placeholder="3–20 letters, numbers or _"></div>
+    <div class="field"><label>Password</label><input id="p" type="password" autocomplete="current-password" placeholder="6+ characters"></div>
+    <div class="authactions"><button class="btn primary" id="signup">Start life</button><button class="btn" id="login">Log in</button></div>
+    <p class="muted" style="font-size:11px;margin-top:14px">No email required. Remember your password.</p>
+  </div>
+</div>
+
+<div id="game" class="app hidden">
+<header class="top"><div class="topin">
+  <div class="logo">AKURE <b>LIFE</b></div>
+  <div class="hud">
+    <div class="chip"><small>Day / time</small><strong id="daytime">1 • 08:00</strong></div>
+    <div class="chip"><small>Cash</small><strong id="money">₦20,000</strong></div>
+    <div class="chip"><small>Energy</small><strong id="energy">100</strong></div>
+    <div class="chip"><small>Health</small><strong id="health">100</strong></div>
+    <div class="chip"><small>Skill</small><strong id="skill">0</strong></div>
+    <div class="chip"><small>Job</small><strong id="job">None</strong></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+<div class="layout">
+<section>
+  <div class="panel world">
+    <canvas id="city"></canvas>
+    <div class="worldui">
+      <div class="place"><h1 id="place">Oja Oba</h1><p id="placeDesc">The market never really sleeps.</p></div>
+      <div class="objective"><small>Today's objective</small><b id="objective">Make your first move</b><span id="objectiveHint">Choose a location, work, study or hustle.</span></div>
+      <div class="playerdot"><div class="head"></div><div class="bodyp"></div><div class="legs"></div></div>
+      <div class="playerbadge" id="badge">You • Day 1</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="aWork">💼 Work</button>
+    <button class="btn" id="aStudy">📚 Study ₦1k</button>
+    <button class="btn" id="aHustle">🛵 Hustle</button>
+    <button class="btn" id="aRest">😴 Rest</button>
+    <button class="btn" id="aEat">🍲 Eat ₦2.5k</button>
+    <button class="btn green" id="aJobs">📈 Careers</button>
+    <button class="btn" id="aSocial">👥 Players</button>
+    <button class="btn" id="aNext">🌙 End day</button>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <div class="head"><b>Explore Akure</b><span class="muted">Travel costs 1 action</span></div>
+    <div class="body"><div id="locations" class="locationgrid"></div></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <div class="head"><b>Life log</b><span class="muted" id="slots">3 actions left</span></div>
+    <div class="body" id="log"></div>
+  </div>
+</section>
+
+<aside>
+  <div class="panel">
+    <div class="head"><b>Your life</b><button class="btn small" id="profile">Profile</button></div>
+    <div class="body">
+      <div class="stat"><div class="statline"><span>Energy</span><b id="energy2">100</b></div><div class="bar"><div id="energyBar" class="fill" style="width:100%"></div></div></div>
+      <div class="stat"><div class="statline"><span>Health</span><b id="health2">100</b></div><div class="bar"><div id="healthBar" class="fill" style="width:100%"></div></div></div>
+      <div class="stat"><div class="statline"><span>Skill</span><b id="skill2">0</b></div><div class="bar"><div id="skillBar" class="fill" style="width:0%"></div></div></div>
+      <div class="notice" style="margin-top:10px"><strong id="status">You are starting your life.</strong><br><span id="statusText" class="muted">Find work or study to build your future.</span></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <div class="head"><b>Live city</b><span class="muted">Realtime</span></div>
+    <div class="body"><div id="feed" class="feed"></div><div class="chat"><input id="chatIn" maxlength="300" placeholder="Talk to Akure..."><button class="btn primary" id="chatSend">Send</button></div></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <div class="head"><b>Top citizens</b><button class="btn small" id="refresh">Refresh</button></div>
+    <div class="body" id="board"></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <div class="head"><b>Quick controls</b></div>
+    <div class="body" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn" id="sound">🔊 Sound</button><button class="btn danger" id="logout">Log out</button></div>
+  </div>
+</aside>
+</div>
+</main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mtitle" style="margin:0">Akure Life</h2><button class="btn small" id="mclose">Close</button></div><div id="mbody" style="margin-top:14px"></div></div></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const SUPABASE_URL='https://vhsvegqvwjtqrghqkldl.supabase.co';
+const SUPABASE_KEY='sb_publishable_OxNSBjW5OSqfKBp33lmy0A_g1u7LU2Y';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const naira=n=>'₦'+Math.round(n).toLocaleString('en-NG');
+const rand=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
+const TOTAL_DAYS=120,RENT=15000,FOOD=1500,SLOTS=3;
+const JOBS=[
+{id:'keke',name:'Keke rider',place:'Oja Oba',pay:[3000,5500],energy:35,req:0},
+{id:'shop',name:'Shop attendant',place:'Isinkan Market',pay:[4000,6500],energy:30,req:2},
+{id:'teacher',name:'Teacher',place:'FUTA area',pay:[6000,9000],energy:30,req:6},
+{id:'civil',name:'Civil servant',place:'Alagbaka',pay:[9000,13000],energy:25,req:12},
+{id:'dev',name:'Software developer',place:'Remote',pay:[15000,26000],energy:30,req:20}
+];
+const LOCS=[
+{name:'Oja Oba',icon:'🛍️',desc:'Market, food, street hustle.',x:.20,y:.58},
+{name:'FUTA Gate',icon:'🎓',desc:'Students, learning, opportunity.',x:.72,y:.22},
+{name:'Alagbaka',icon:'🏛️',desc:'Government and business.',x:.80,y:.62},
+{name:'Isinkan Market',icon:'🍅',desc:'Neighbourhood commerce.',x:.36,y:.78},
+{name:'Oba Adesida',icon:'🚗',desc:'Busy commercial corridor.',x:.52,y:.46},
+{name:'Ijapo Estate',icon:'🏡',desc:'Home, rest, social life.',x:.18,y:.22},
+{name:'Arakale',icon:'🚌',desc:'Transport and movement.',x:.57,y:.82},
+{name:'Cocoa Road',icon:'🌿',desc:'Green city edge.',x:.84,y:.17}
+];
+const EVENTS=[
+['NEPA took light. Generator fuel was needed.',-2000,0,0],['You found money in an old trouser pocket!',1500,0,0],
+['Cousin visited from Lagos. You entertained him.',-3000,0,0],['A customer gave you a generous tip.',2000,0,0],
+['Malaria caught you. Hospital and drugs.',-3000,0,-20],['Wedding aso-ebi contribution. Wahala.',-4000,0,0],
+['Surprise bonus from a client!',5000,0,0],['Rain fell all day. You stayed indoors.',0,-15,0],
+['Neighbour shared jollof rice. You feel strong.',1000,0,10],['Fuel price jumped. Transport cost more.',-1500,0,0]
+];
+let me=null,S=null,channels=[],soundOn=true,clockMin=8*60,selectedLoc='Oja Oba',saveTimer=null;
+
+function toast(t){$('toast').textContent=t;$('toast').classList.remove('hidden');clearTimeout(window.tt);window.tt=setTimeout(()=>$('toast').classList.add('hidden'),3000)}
+function modal(title,body){$('mtitle').textContent=title;$('mbody').innerHTML=body;$('modal').classList.remove('hidden')}
+$('mclose').onclick=()=> $('modal').classList.add('hidden');
+function clean(){const u=$('u').value.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u)){toast('Username: 3–20 letters, numbers or _');return null}if($('p').value.length<6){toast('Password must be 6+ characters');return null}return u}
+const emailOf=u=>u+'@akurelife.app';
+
+$('signup').onclick=async()=>{const u=clean();if(!u)return;const {data,error}=await sb.auth.signUp({email:emailOf(u),password:$('p').value});if(error){toast(/registered|exists/i.test(error.message)?'That username is taken':error.message);return}if(!data.session){toast('Account created but no session. Confirm email must be OFF in Supabase.');return}me={id:data.user.id,username:u};start(true)}
+$('login').onclick=async()=>{const u=clean();if(!u)return;const {data,error}=await sb.auth.signInWithPassword({email:emailOf(u),password:$('p').value});if(error){toast('Wrong username or password');return}me={id:data.user.id,username:u};start(false)}
+$('logout').onclick=async()=>{await save();channels.forEach(c=>sb.removeChannel(c));await sb.auth.signOut();location.reload()}
+(async()=>{const {data}=await sb.auth.getSession();if(data.session){me={id:data.session.user.id,username:(data.session.user.email||'').split('@')[0]};start(false)}})();
+
+function newState(){return{day:1,money:20000,energy:100,health:100,skill:0,slots:SLOTS,strikes:0,job:null,finished:false,location:'Oja Oba',log:['Welcome to Akure. You have ₦20,000 and a room in Ijapo.']}}
+function fromRow(r){const s=r.state||{};return{day:r.day,money:Number(r.money),job:r.job,energy:s.energy??100,health:s.health??100,skill:s.skill??0,slots:s.slots??SLOTS,strikes:s.strikes??0,finished:!!s.finished,location:s.location||'Oja Oba',log:s.log||[]}}
+function row(){return{id:me.id,username:me.username,day:S.day,money:Math.round(S.money),job:S.job,state:{energy:S.energy,health:S.health,skill:S.skill,slots:S.slots,strikes:S.strikes,finished:S.finished,location:S.location,log:S.log.slice(0,10)},updated_at:new Date().toISOString()}}
+async function save(){clearTimeout(saveTimer);if(!S||!me)return;const {error}=await sb.from('players').upsert(row());if(error)toast('Save problem: '+error.message)}
+function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,700)}
+async function start(isNew){$('auth').classList.add('hidden');$('game').classList.remove('hidden');const {data,error}=await sb.from('players').select('*').eq('id',me.id).maybeSingle();if(error)toast(error.message);S=data?fromRow(data):newState();if(isNew&&!data)await save();render();drawCity();loadBoard();loadChat();subscribe()}
+function job(){return JOBS.find(j=>j.id===S.job)}
+function can(){if(S.finished){toast('Your 120-day life is over.');return false}if(S.slots<1){toast('No actions left today. End the day.');return false}return true}
+function clamp(){S.energy=Math.max(0,Math.min(100,S.energy));S.health=Math.max(0,Math.min(100,S.health));if(S.money<0)S.money=0}
+function say(x){S.log.unshift(x);S.log=S.log.slice(0,10)}
+function actTime(n){clockMin+=n;if(clockMin>=24*60)clockMin%=24*60}
+function done(){clamp();render();drawCity();queueSave()}
+
+$('aWork').onclick=()=>{if(!can())return;const j=job();if(!j)return openJobs();if(S.energy<j.energy)return toast('Too tired. Rest or eat first.');if(S.location!==j.place&&j.place!=='Remote'){toast('Travel to '+j.place+' first.');return}const p=rand(j.pay[0],j.pay[1]);S.money+=p;S.energy-=j.energy;S.slots--;actTime(180);say('💼 '+j.name+' shift: +'+naira(p));$('status').textContent='Shift complete';$('statusText').textContent='You earned '+naira(p)+' at '+(j.place||'home')+'.';done()}
+$('aStudy').onclick=()=>{if(!can())return;if(S.money<1000)return toast('You need ₦1,000.');if(S.energy<30)return toast('Too tired to study.');S.money-=1000;S.energy-=30;S.skill++;S.slots--;actTime(120);say('📚 You studied near FUTA. Skill is now '+S.skill+'.');done()}
+$('aHustle').onclick=()=>{if(!can())return;if(S.energy<20)return toast('Too tired to hustle.');const r=rand(-1000,4000);S.money+=r;S.energy-=20;S.slots--;actTime(100);say(r>=0?'🛵 Side hustle paid '+naira(r)+'.':'🛵 Side hustle went wrong. Lost '+naira(-r)+'.');done()}
+$('aRest').onclick=()=>{if(!can())return;S.energy+=30;S.health+=5;S.slots--;actTime(120);say('😴 You rested at home.');done()}
+$('aEat').onclick=()=>{if(!can())return;if(S.money<2500)return toast('Not enough money.');S.money-=2500;S.energy+=20;S.health+=15;S.slots--;actTime(35);say('🍲 You ate a proper meal.');done()}
+$('aNext').onclick=()=>{if(!S.finished)endDay()}
+function endDay(){
+ if(S.money>=FOOD){S.money-=FOOD;say('🍛 Daily food: -'+naira(FOOD))}else{S.health-=15;say('😞 You could not afford food. Health dropped.')}
+ if(S.day%30===0){if(S.money>=RENT){S.money-=RENT;S.strikes=0;say('🏠 Rent paid: -'+naira(RENT))}else{S.strikes++;say('🏠 Rent missed. Warning '+S.strikes+' of 2.')}}
+ if(S.strikes>=2||S.health<=0){S.finished=true;say(S.strikes>=2?'🚪 Evicted. Game over.':'🏥 Health reached zero. Game over.');done();return}
+ if(S.day>=TOTAL_DAYS){S.finished=true;say('🏁 120 days completed! Final cash: '+naira(S.money));done();return}
+ S.day++;S.slots=SLOTS;S.energy=S.health>50?100:70;clockMin=8*60;
+ if(Math.random()<.45){const e=EVENTS[rand(0,EVENTS.length-1)];S.money+=e[1];S.energy+=e[2];S.health+=e[3];say('⚡ '+e[0]+(e[1]?' ('+(e[1]>0?'+':'')+naira(e[1])+')':''))}
+ render();drawCity();save()
+}
+function travel(name){
+ if(name===S.location)return toast('You are already here.');if(!can())return;
+ if(S.energy<5)return toast('Too tired to travel. Rest first.');
+ S.energy-=5;S.slots--;S.location=name;actTime(35);say('🚶 You travelled to '+name+'.');$('status').textContent='Now in '+name;$('statusText').textContent=LOCS.find(x=>x.name===name)?.desc||'';done()
+}
+function openJobs(){
+ modal('Careers',`<p class="muted">Build skill to unlock better-paying work.</p><div>${JOBS.map(j=>`<div class="job"><div><b>${j.name}</b><small>${j.place} • ${naira(j.pay[0])}–${naira(j.pay[1])} • ${j.energy} energy • skill ${j.req}</small></div><button class="btn small ${S.job===j.id?'green':''}" ${S.skill<j.req||S.job===j.id?'disabled':''} onclick="takeJob('${j.id}')">${S.job===j.id?'Current':'Take'}</button></div>`).join('')}</div>`)
+}
+function takeJob(id){const j=JOBS.find(x=>x.id===id);if(S.skill<j.req)return toast('Need skill '+j.req);S.job=id;say('✅ Career selected: '+j.name);$('modal').classList.add('hidden');done()}
+function openProfile(){modal('Character',`<div class="notice"><strong>${esc(me.username)}</strong><br><span class="muted">Day ${S.day} • ${job()?.name||'Unemployed'} • ${esc(S.location)}</span></div><div style="margin-top:10px;display:grid;gap:7px">${[['Cash',naira(S.money)],['Energy',S.energy],['Health',S.health],['Skill',S.skill],['Rent warning',S.strikes]].map(x=>`<div class="loc"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div>`)}
+function openSocial(){const people=playersCache.filter(p=>p.id!==me.id);modal('Citizens of Akure',`<p class="muted">${people.length} other citizens visible.</p>${people.map(p=>`<div class="rank"><span><b>${esc(p.username)}</b><br><span class="muted">Day ${p.day} • ${esc((p.state||{}).location||'Akure')}</span></span><button class="btn small" onclick="gift('${p.id}','${esc(p.username)}')">Gift</button></div>`).join('')||'<p class="muted">No other citizens yet.</p>'}`)}
+function gift(id,name){modal('Send a gift',`<p>Send money to <b>${name}</b>.</p><input id="giftAmt" type="number" placeholder="Amount in ₦"><button class="btn primary" style="margin-top:8px" onclick="sendGift('${id}')">Send gift</button>`)}
+async function sendGift(id){const a=Math.floor(Number($('giftAmt').value));if(!a||a<=0)return toast('Enter an amount.');if(a>S.money)return toast('You do not have that much.');await save();const {error}=await sb.rpc('send_gift',{to_player:id,gift_amount:a});if(error)return toast(error.message);S.money-=a;say('🎁 You gifted '+naira(a)+'.');$('modal').classList.add('hidden');done();loadBoard()}
+function render(){
+ clamp();$('daytime').textContent=`${S.day} • ${String(Math.floor(clockMin/60)).padStart(2,'0')}:${String(clockMin%60).padStart(2,'0')}`;
+ $('money').textContent=naira(S.money);$('energy').textContent=S.energy;$('health').textContent=S.health;$('skill').textContent=S.skill;$('job').textContent=job()?.name||'None';
+ $('energy2').textContent=S.energy;$('health2').textContent=S.health;$('skill2').textContent=S.skill;
+ $('energyBar').style.width=S.energy+'%';$('healthBar').style.width=S.health+'%';$('skillBar').style.width=Math.min(100,S.skill*5)+'%';
+ const l=LOCS.find(x=>x.name===S.location)||LOCS[0];$('place').textContent=l.icon+' '+l.name;$('placeDesc').textContent=l.desc;$('badge').textContent=`${me.username} • Day ${S.day}`;
+ $('slots').textContent=`${S.slots} action${S.slots===1?'':'s'} left`;
+ $('objective').textContent=S.job?'Earn money and build skill':'Choose a career';$('objectiveHint').textContent=S.job?`Work as ${job().name}, study, hustle and survive.`:'Study or open Careers to choose your path.';
+ $('log').innerHTML=S.log.map(x=>`<div style="padding:7px 0;border-bottom:1px solid var(--line);font-size:12px">${esc(x)}</div>`).join('');
+ $('aWork').disabled=S.finished;$('aStudy').disabled=S.finished;$('aHustle').disabled=S.finished;$('aRest').disabled=S.finished;$('aEat').disabled=S.finished;$('aNext').disabled=S.finished;
+ $('locations').innerHTML=LOCS.map(x=>`<div class="loc"><div><b>${x.icon} ${x.name}</b><small>${x.desc}</small></div><button class="btn small" onclick="travel('${x.name}')">${S.location===x.name?'Here':'Go'}</button></div>`).join('');
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+async function loadBoard(){const {data,error}=await sb.from('players').select('id,username,money,day,state').order('money',{ascending:false}).limit(50);if(error)return toast('Leaderboard problem');playersCache=data||[];$('board').innerHTML=playersCache.map((p,i)=>`<div class="rank"><span><b>#${i+1} ${esc(p.username)}${p.id===me.id?' (you)':''}</b><br><span class="muted">Day ${p.day} • ${esc((p.state||{}).location||'Akure')}</span></span><b>${naira(p.money)}</b></div>`).join('')||'<span class="muted">No citizens yet.</span>'}
+async function loadChat(){const {data}=await sb.from('messages').select('*').order('created_at',{ascending:false}).limit(50);$('feed').innerHTML='';(data||[]).reverse().forEach(addMsg)}
+function addMsg(m){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>${esc(m.username)}</b> <i>${new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</i><br>${esc(m.body)}`;$('feed').appendChild(d);$('feed').scrollTop=$('feed').scrollHeight}
+async function sendChat(){const body=$('chatIn').value.trim();if(!body)return;$('chatIn').value='';const {error}=await sb.from('messages').insert({username:me.username,body});if(error)toast('Message not sent: '+error.message)}
+$('chatSend').onclick=sendChat;$('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+$('aJobs').onclick=openJobs;$('aSocial').onclick=openSocial;$('profile').onclick=openProfile;$('refresh').onclick=loadBoard;
+$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'🔊 Sound':'🔇 Sound off'};
+
+function drawCity(){
+ const c=$('city'),r=c.getBoundingClientRect(),d=window.devicePixelRatio||1,w=Math.max(1,r.width),h=Math.max(1,r.height);c.width=w*d;c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);
+ const sky=x.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#1d4056');sky.addColorStop(.48,'#3e6b61');sky.addColorStop(.49,'#17271f');sky.addColorStop(1,'#0c1411');x.fillStyle=sky;x.fillRect(0,0,w,h);
+ x.fillStyle='#f5d36d';x.beginPath();x.arc(w*.83,h*.13,38,0,Math.PI*2);x.fill();
+ // distant skyline
+ for(let i=0;i<18;i++){const bw=35+((i*17)%55),bh=60+((i*31)%90),bx=(i/18)*w;x.fillStyle=i%3?'#263d3a':'#304c4b';x.fillRect(bx,h*.48-bh,bw,bh);for(let yy=h*.48-bh+12;yy<h*.48-10;yy+=18){x.fillStyle='#d6b86a88';x.fillRect(bx+7,yy,8,5);x.fillRect(bx+20,yy,8,5)}}
+ // roads
+ x.save();x.translate(w*.5,h*.66);x.rotate(-.11);x.fillStyle='#343c40';x.fillRect(-w*.7,-42,w*1.4,84);x.strokeStyle='#6c7375';x.setLineDash([22,18]);x.lineWidth=3;x.beginPath();x.moveTo(-w*.7,0);x.lineTo(w*.7,0);x.stroke();x.restore();
+ x.save();x.translate(w*.59,h*.5);x.rotate(.22);x.fillStyle='#2c3437';x.fillRect(-30,-h*.7,60,h*1.4);x.restore();
+ // greenery
+ for(let i=0;i<12;i++){const tx=((i*97)%100)/100*w,ty=h*(.56+((i*37)%34)/100);x.fillStyle='#164c35';x.beginPath();x.arc(tx,ty,18+((i*13)%15),0,Math.PI*2);x.fill();x.fillStyle='#246947';x.beginPath();x.arc(tx+7,ty-10,13,0,Math.PI*2);x.fill()}
+ // location markers
+ LOCS.forEach((l,i)=>{const px=l.x*w,py=l.y*h,active=l.name===S.location;x.fillStyle=active?'#f3b83f':'#0b1118';x.strokeStyle=active?'#fff0a5':'#b6c7d6';x.lineWidth=2;x.beginPath();x.arc(px,py,active?13:9,0,Math.PI*2);x.fill();x.stroke();x.fillStyle='#fff';x.font='bold 11px system-ui';x.textAlign='center';x.fillText(l.name,px,py-17)})
+}
+window.addEventListener('resize',drawCity);
+
+function subscribe(){
+ channels.forEach(c=>sb.removeChannel(c));channels=[];
+ const chat=sb.channel('akure-chat').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>addMsg(p.new)).subscribe();
+ const players=sb.channel('akure-players').on('postgres_changes',{event:'*',schema:'public',table:'players'},()=>loadBoard()).subscribe();
+ const gifts=sb.channel('akure-gifts').on('postgres_changes',{event:'INSERT',schema:'public',table:'gifts'},p=>{if(p.new.to_id===me.id){S.money+=Number(p.new.amount);say('🎁 You received '+naira(p.new.amount)+'!');done()}}).subscribe();
+ channels=[chat,players,gifts];
+}
+</script>
+</body>
+</html>
