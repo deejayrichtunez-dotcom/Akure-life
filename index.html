@@ -2,37 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#171326">
 <title>Akure Life</title>
 <style>
   :root{
     --ink:#171326; --panel:#241d3d; --panel2:#30264f; --line:#443a6b;
     --keke:#ffc61a; --leaf:#1fa35b; --laterite:#e4572e; --sky:#5ec2ff;
-    --text:#f4f1ff; --muted:#a9a0cc;
-    --r-big:22px; --r-small:10px;
+    --text:#f4f1ff; --muted:#a9a0cc; --r-big:22px; --r-small:10px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  [hidden]{display:none!important}
   html,body{margin:0;background:var(--ink);color:var(--text);
     font-family:"Trebuchet MS","Segoe UI",system-ui,-apple-system,sans-serif}
-  body{padding-bottom:84px;min-height:100vh}
-  [hidden]{display:none!important}
+  body{min-height:100vh}
   button,input,select{font:inherit}
   button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--keke);outline-offset:2px}
 
-  /* Ankara-style strip: the one signature motif */
-  .ankara{height:12px;background:
-    repeating-linear-gradient(90deg,var(--keke) 0 14px,var(--leaf) 14px 28px,var(--laterite) 28px 42px,var(--sky) 42px 56px);
+  .ankara{height:12px;background:repeating-linear-gradient(90deg,var(--keke) 0 14px,var(--leaf) 14px 28px,var(--laterite) 28px 42px,var(--sky) 42px 56px);
     -webkit-mask:radial-gradient(circle 6px at 7px 6px,#000 98%,#0000) 0 0/14px 12px repeat-x;
     mask:radial-gradient(circle 6px at 7px 6px,#000 98%,#0000) 0 0/14px 12px repeat-x}
 
-  /* ===== login ===== */
+  /* login */
   #auth{min-height:100vh;display:flex;flex-direction:column}
-  .hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0}
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end}
   .hero svg{display:block;width:100%;height:auto;max-height:46vh}
   .login{max-width:460px;width:100%;margin:0 auto;padding:18px 18px 28px}
-  .logo{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin:0 0 6px;color:var(--keke);
-    text-shadow:3px 3px 0 var(--laterite)}
+  .logo{font-size:44px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin:0 0 6px;color:var(--keke);text-shadow:3px 3px 0 var(--laterite)}
   .login p.sub{margin:0 0 16px;color:var(--muted);font-size:16px}
   input,select{width:100%;padding:14px;border-radius:var(--r-small);border:2px solid var(--line);background:var(--panel);color:var(--text);font-size:16px;margin-bottom:10px}
   .btn{background:var(--keke);color:#2a1d00;border:0;border-radius:var(--r-small);padding:14px 16px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 #b88900}
@@ -43,26 +39,43 @@
   .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .note{font-size:13px;color:var(--muted);margin:10px 0 0}
 
-  /* ===== game shell ===== */
-  .shell{max-width:1000px;margin:0 auto;padding:0 12px}
-  .hud{position:sticky;top:0;z-index:20;background:var(--ink);padding:10px 0 8px;
-    display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--line)}
-  .pill{background:var(--panel);border-radius:999px;padding:8px 14px;font-weight:800;white-space:nowrap}
-  .pill small{color:var(--muted);font-weight:600;margin-right:6px}
-  .money{margin-left:auto;font-size:22px;color:var(--keke);font-variant-numeric:tabular-nums}
-  .grid{display:grid;gap:12px;margin-top:12px}
-  @media(min-width:900px){ .grid.play{grid-template-columns:1.25fr 1fr;align-items:start} }
+  /* shell */
+  .shell{max-width:1100px;margin:0 auto;padding:0 10px}
+  .hud{position:sticky;top:0;z-index:20;background:var(--ink);padding:8px 0;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--line);height:56px}
+  .pill{background:var(--panel);border-radius:999px;padding:7px 13px;font-weight:800;white-space:nowrap;font-size:15px}
+  .pill small{color:var(--muted);font-weight:600;margin-right:5px}
+  .money{margin-left:auto;font-size:21px;color:var(--keke);font-variant-numeric:tabular-nums}
+  .grid{display:grid;gap:12px;margin-top:12px;padding-bottom:88px}
+  @media(min-width:900px){.grid.me{grid-template-columns:1fr 1fr;align-items:start}}
 
-  .scene{position:relative;border-radius:var(--r-big);overflow:hidden;background:#000;border:3px solid var(--line)}
-  .scene svg{display:block;width:100%;height:auto}
-  .scene .place{position:absolute;left:12px;top:12px;background:#000a;color:#fff;padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
-  .scene .phase{position:absolute;right:12px;top:12px;background:#000a;color:#fff;padding:6px 12px;border-radius:999px;font-weight:700;font-size:14px}
-  .avatar{position:absolute;left:14%;bottom:7%;font-size:54px;line-height:1;filter:drop-shadow(0 4px 0 #0006);transform-origin:50% 100%}
-  .avatar.hop{animation:hop .5s ease-out}
-  @keyframes hop{0%{transform:translateY(0)}35%{transform:translateY(-22px) scale(1.05)}100%{transform:translateY(0)}}
-  .floater{position:absolute;left:14%;bottom:34%;font-weight:900;font-size:26px;text-shadow:0 2px 0 #000;pointer-events:none;animation:floatup 1.3s ease-out forwards}
-  .floater.up{color:#6dff9b} .floater.down{color:#ff7a6a}
-  @keyframes floatup{0%{opacity:0;transform:translateY(10px)}15%{opacity:1}100%{opacity:0;transform:translateY(-70px)}}
+  /* world */
+  #world{position:relative;height:calc(100vh - 56px - 70px);height:calc(100dvh - 56px - 70px);margin:0 -10px;background:#3f8a4d;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+  @media(min-width:1120px){#world{margin:0;border-radius:0 0 var(--r-big) var(--r-big)}}
+  #cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .chip{position:absolute;background:#171326d9;border-radius:14px;padding:8px 10px;font-weight:700;font-size:13px;pointer-events:none}
+  #mini{left:10px;top:10px;display:grid;gap:5px;min-width:150px}
+  .mb{display:grid;grid-template-columns:20px 1fr 28px;gap:6px;align-items:center}
+  .mt{height:10px;background:#0006;border-radius:9px;overflow:hidden}
+  .mf{height:100%;border-radius:9px;transition:width .3s}
+  .mf.e{background:var(--keke)} .mf.h{background:var(--laterite)} .mf.s{background:var(--sky)}
+  #online{right:10px;top:10px}
+  #goal{left:50%;transform:translateX(-50%);top:10px;max-width:46%;text-align:center;line-height:1.3}
+  @media(max-width:700px){#world.sheeton #goal{display:none}#goal{left:10px;right:10px;transform:none;top:auto;bottom:10px;max-width:none}#online{top:10px}#mini{top:10px}}
+  #sheet{position:absolute;left:10px;right:10px;bottom:10px;background:var(--panel);border:3px solid var(--keke);border-radius:var(--r-big);padding:12px;animation:rise .2s ease-out;max-width:560px;margin:0 auto}
+  @keyframes rise{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+  #sheet h3{margin:0 0 2px;font-size:19px}
+  #sheet p{margin:0 0 10px;color:var(--muted);font-size:13px}
+  .sacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+  .sa{background:var(--panel2);color:var(--text);border:2px solid var(--line);border-radius:14px;padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;box-shadow:0 3px 0 #1b1533}
+  .sa:active{transform:translateY(2px);box-shadow:0 1px 0 #1b1533}
+  .sa .ic{font-size:26px;line-height:1.1} .sa b{font-size:14px} .sa small{color:var(--muted);font-size:11px;text-align:center}
+  .sa.go{background:var(--leaf);border-color:#0f6e3a;box-shadow:0 3px 0 #0b5a2f} .sa.go small{color:#d5ffe6}
+  .sa.job{background:#5a4210;border-color:var(--keke)}
+  .sa:disabled{opacity:.4;cursor:not-allowed}
+  #pad{position:absolute;left:14px;bottom:14px;width:130px;height:130px;display:none}
+  @media(pointer:coarse){#pad{display:block}}
+  #pad .base{position:absolute;inset:0;border-radius:50%;background:#171326aa;border:3px solid #ffffff55}
+  #pad .knob{position:absolute;left:45px;top:45px;width:40px;height:40px;border-radius:50%;background:var(--keke);box-shadow:0 3px 0 #b88900}
 
   .panel{background:var(--panel);border-radius:var(--r-big);padding:14px}
   .panel h3{margin:0 0 10px;font-size:18px}
@@ -72,64 +85,36 @@
   .fill{height:100%;border-radius:999px;transition:width .4s}
   .fill.e{background:var(--keke)} .fill.h{background:var(--laterite)} .fill.s{background:var(--sky)}
   .info{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.45}
-
-  .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(min-width:560px){.acts{grid-template-columns:repeat(3,1fr)}}
-  .act{background:var(--panel2);color:var(--text);border:2px solid var(--line);border-radius:16px;padding:12px 8px;cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 4px 0 #1b1533;min-height:96px}
-  .act:active{transform:translateY(3px);box-shadow:0 1px 0 #1b1533}
-  .act .ic{font-size:32px;line-height:1.1}
-  .act b{font-size:15px} .act small{color:var(--muted);font-size:12px;text-align:center}
-  .act.go{background:var(--leaf);border-color:#0f6e3a;box-shadow:0 4px 0 #0b5a2f}
-  .act.go small{color:#d5ffe6}
-  .act:disabled{opacity:.4;cursor:not-allowed}
-
-  .job{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
-  .job:last-child{border:0}
-  .job b{display:block;font-size:15px} .job small{color:var(--muted)}
-  .job .btn{padding:9px 14px;font-size:14px}
+  .job{display:grid;grid-template-columns:1fr;gap:2px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .job:last-child{border:0} .job b{font-size:15px} .job small{color:var(--muted)}
+  .job.mine b{color:var(--keke)}
   .logl p{margin:0;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted);line-height:1.4}
-  .logl p:first-child{color:var(--text);font-weight:700}
-  .logl p:last-child{border:0}
-
-  /* board */
+  .logl p:first-child{color:var(--text);font-weight:700} .logl p:last-child{border:0}
   .lb{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;padding:11px 10px;border-radius:12px;margin-bottom:6px;background:var(--panel2)}
-  .lb .rk{font-size:22px;text-align:center;font-weight:900}
-  .lb.me{border:2px solid var(--keke)}
-  .lb small{color:var(--muted);display:block}
-  .lb .amt{font-weight:800;color:var(--keke);font-variant-numeric:tabular-nums}
-
-  /* chat */
-  .chat{height:52vh;overflow-y:auto;background:var(--ink);border-radius:14px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
-  .bub{max-width:82%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:var(--panel2);font-size:15px;word-wrap:break-word;overflow-wrap:anywhere}
+  .lb .rk{font-size:22px;text-align:center;font-weight:900} .lb.me{border:2px solid var(--keke)}
+  .lb small{color:var(--muted);display:block} .lb .amt{font-weight:800;color:var(--keke);font-variant-numeric:tabular-nums}
+  .chat{height:48vh;overflow-y:auto;background:var(--ink);border-radius:14px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+  .bub{max-width:82%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:var(--panel2);font-size:15px;overflow-wrap:anywhere}
   .bub b{display:block;font-size:12px;color:var(--keke);margin-bottom:2px}
-  .bub.mine{align-self:flex-end;background:#2c5f45;border-radius:16px 16px 4px 16px}
-  .bub.mine b{color:#aef0c9}
+  .bub.mine{align-self:flex-end;background:#2c5f45;border-radius:16px 16px 4px 16px} .bub.mine b{color:#aef0c9}
   .bub i{font-style:normal;color:var(--muted);font-size:11px;margin-left:6px}
-  .sendrow{display:grid;grid-template-columns:1fr auto;gap:8px}
-  .sendrow input{margin:0}
+  .sendrow{display:grid;grid-template-columns:1fr auto;gap:8px} .sendrow input{margin:0}
 
-  /* tab bar */
-  nav{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:3px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom);z-index:30}
-  nav button{background:none;border:0;color:var(--muted);padding:10px 2px 12px;font-weight:700;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
-  nav button span{font-size:24px;line-height:1}
-  nav button.on{color:var(--keke)}
-  nav button.on span{transform:scale(1.15)}
+  nav{position:fixed;bottom:0;left:0;right:0;height:70px;background:var(--panel);border-top:3px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);z-index:30}
+  nav button{background:none;border:0;color:var(--muted);padding:8px 2px;font-weight:700;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+  nav button span{font-size:23px;line-height:1} nav button.on{color:var(--keke)} nav button.on span{transform:scale(1.15)}
 
-  /* modal + toast */
   #modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
   #modal.show{display:flex}
   .card{background:var(--panel);border:3px solid var(--keke);border-radius:var(--r-big);padding:22px;max-width:380px;width:100%;text-align:center;animation:pop .25s ease-out}
   @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-  .card .big{font-size:56px;line-height:1}
-  .card h2{margin:10px 0 6px;font-size:24px}
-  .card p{margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.45}
+  .card .big{font-size:56px;line-height:1} .card h2{margin:10px 0 6px;font-size:24px} .card p{margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.45}
   #toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#000d;color:#fff;padding:10px 16px;border-radius:12px;z-index:60;display:none;max-width:90%;text-align:center;font-weight:600}
   #dayfade{position:fixed;inset:0;background:var(--ink);z-index:40;display:none;align-items:center;justify-content:center;flex-direction:column;font-size:34px;font-weight:900;color:var(--keke)}
   #dayfade.show{display:flex;animation:fadeinout 1.3s ease-in-out forwards}
   #dayfade small{font-size:16px;color:var(--muted);font-weight:600;margin-top:6px}
   @keyframes fadeinout{0%{opacity:0}25%{opacity:1}75%{opacity:1}100%{opacity:0}}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (prefers-reduced-motion:reduce){#dayfade.show,#sheet,.card{animation:none!important}}
 </style>
 </head>
 <body>
@@ -137,13 +122,12 @@
 <div id="dayfade"><div id="dayfadeT"></div><small id="dayfadeS"></small></div>
 <div id="modal"><div class="card"><div class="big" id="mIc"></div><h2 id="mT"></h2><p id="mB"></p><button class="btn" id="mOk">Continue</button></div></div>
 
-<!-- ============ LOGIN ============ -->
 <div id="auth">
   <div class="hero" id="heroScene"></div>
   <div class="ankara"></div>
   <div class="login">
     <h1 class="logo">Akure Life</h1>
-    <p class="sub">120 days. One room in Ijapo. Make your money last.</p>
+    <p class="sub">120 days. One room in Ijapo. Walk the town and make your money last.</p>
     <input id="u" placeholder="Username" autocapitalize="none" autocomplete="username" aria-label="Username">
     <input id="p" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password">
     <div class="two">
@@ -154,23 +138,32 @@
   </div>
 </div>
 
-<!-- ============ GAME ============ -->
 <div id="game" hidden>
   <div class="shell">
     <div class="hud">
       <div class="pill"><small>Day</small><span id="hDay"></span></div>
+      <div class="pill" id="hPhase"></div>
       <div class="pill money" id="hMoney"></div>
     </div>
 
-    <section id="tab-play" class="grid play">
-      <div>
-        <div class="scene">
-          <div id="sceneBox"></div>
-          <div class="place" id="place"></div>
-          <div class="phase" id="phase"></div>
-          <div class="avatar" id="avatar">🧑🏾</div>
+    <section id="tab-play">
+      <div id="world">
+        <canvas id="cv"></canvas>
+        <div class="chip" id="mini">
+          <div class="mb"><span>⚡</span><div class="mt"><div class="mf e" id="mE"></div></div><span id="mEn"></span></div>
+          <div class="mb"><span>❤️</span><div class="mt"><div class="mf h" id="mH"></div></div><span id="mHn"></span></div>
+          <div class="mb"><span>📘</span><div class="mt"><div class="mf s" id="mS"></div></div><span id="mSn"></span></div>
         </div>
-        <div class="panel" style="margin-top:12px">
+        <div class="chip" id="online">👥 1 online</div>
+        <div class="chip" id="goal"></div>
+        <div id="pad"><div class="base"></div><div class="knob" id="knob"></div></div>
+        <div id="sheet" hidden></div>
+      </div>
+    </section>
+
+    <section id="tab-me" hidden class="grid me">
+      <div>
+        <div class="panel"><h3>You</h3>
           <div class="bars">
             <div class="bar"><span>⚡ Energy</span><div class="track"><div class="fill e" id="bE"></div></div><span id="nE"></span></div>
             <div class="bar"><span>❤️ Health</span><div class="track"><div class="fill h" id="bH"></div></div><span id="nH"></span></div>
@@ -178,27 +171,13 @@
           </div>
           <p class="info" id="sInfo"></p>
         </div>
-      </div>
-
-      <div>
-        <div class="panel">
-          <h3>What will you do? <span style="color:var(--muted);font-weight:600;font-size:14px">(<span id="sSlots"></span> left today)</span></h3>
-          <div class="acts">
-            <button class="act" id="aWork"><span class="ic">💼</span><b>Work</b><small id="wTxt">Get a job first</small></button>
-            <button class="act" id="aStudy"><span class="ic">📚</span><b>Study</b><small>-₦1,000 · +1 skill</small></button>
-            <button class="act" id="aHustle"><span class="ic">🛵</span><b>Side hustle</b><small>Risky · -20 energy</small></button>
-            <button class="act" id="aRest"><span class="ic">😴</span><b>Rest</b><small>+30 energy</small></button>
-            <button class="act" id="aEat"><span class="ic">🍲</span><b>Good meal</b><small>-₦2,500 · +15 health</small></button>
-            <button class="act go" id="aNext"><span class="ic">🌙</span><b>End day</b><small>Sleep and start the next day</small></button>
-          </div>
-        </div>
-        <div class="panel" style="margin-top:12px"><h3>Jobs in Akure</h3><div id="jobs"></div></div>
         <div class="panel logl" style="margin-top:12px"><h3>Today's news</h3><div id="log"></div></div>
         <div class="two" style="margin-top:12px">
           <button class="btn ghost" id="btnSound">🔊 Sound on</button>
           <button class="btn ghost" id="btnLogout">Log out</button>
         </div>
       </div>
+      <div class="panel"><h3>Jobs in Akure</h3><div id="jobs"></div></div>
     </section>
 
     <section id="tab-board" hidden class="grid"><div class="panel"><h3>🏆 Richest in Akure</h3><div id="lb"></div></div></section>
@@ -206,6 +185,7 @@
     <section id="tab-chat" hidden class="grid"><div class="panel"><h3>💬 Akure chat</h3>
       <div class="chat" id="chat"></div>
       <div class="sendrow"><input id="chatIn" placeholder="Type a message" maxlength="300" aria-label="Message"><button class="btn" id="chatSend">Send</button></div>
+      <p class="note">Your message also pops up above your character in the town.</p>
     </div></section>
 
     <section id="tab-gift" hidden class="grid"><div class="panel"><h3>🎁 Send money to a friend</h3>
@@ -217,7 +197,8 @@
   </div>
 
   <nav>
-    <button data-tab="play" class="on"><span>🎮</span>Play</button>
+    <button data-tab="play" class="on"><span>🗺️</span>Town</button>
+    <button data-tab="me"><span>🧑🏾</span>Me</button>
     <button data-tab="board"><span>🏆</span>Board</button>
     <button data-tab="chat"><span>💬</span>Chat</button>
     <button data-tab="gift"><span>🎁</span>Gift</button>
@@ -235,24 +216,24 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 const naira = n => '₦' + Math.round(n).toLocaleString('en-NG');
 const rand = (a, b) => Math.floor(a + Math.random() * (b - a + 1));
+const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
 const TOTAL_DAYS = 120, RENT = 15000, FOOD = 1500, SLOTS = 3;
 const PHASES = ['🌅 Morning', '☀️ Afternoon', '🌇 Evening', '🌙 Night'];
 
 const JOBS = [
-  { id: 'keke',    name: 'Keke rider',          where: 'Oja Oba',       pay: [3000, 5500],   energy: 35, req: 0,  scene: 'road' },
-  { id: 'shop',    name: 'Shop attendant',      where: 'Isikan Market', pay: [4000, 6500],   energy: 30, req: 2,  scene: 'market' },
-  { id: 'teacher', name: 'Teacher',             where: 'private school',pay: [6000, 9000],   energy: 30, req: 6,  scene: 'campus' },
-  { id: 'civil',   name: 'Civil servant',       where: 'Alagbaka',      pay: [9000, 13000],  energy: 25, req: 12, scene: 'office' },
-  { id: 'dev',     name: 'Software developer',  where: 'remote',        pay: [15000, 26000], energy: 30, req: 20, scene: 'office' },
+  { id: 'keke',    name: 'Keke rider',         loc: 'park',   pay: [3000, 5500],   energy: 35, req: 0 },
+  { id: 'shop',    name: 'Shop attendant',     loc: 'market', pay: [4000, 6500],   energy: 30, req: 2 },
+  { id: 'teacher', name: 'Teacher',            loc: 'campus', pay: [6000, 9000],   energy: 30, req: 6 },
+  { id: 'civil',   name: 'Civil servant',      loc: 'office', pay: [9000, 13000],  energy: 25, req: 12 },
+  { id: 'dev',     name: 'Software developer', loc: 'office', pay: [15000, 26000], energy: 30, req: 20 },
 ];
-const PLACE_NAMES = { home: 'Ijapo Estate', market: 'Isikan Market', campus: 'FUTA', road: 'Oba Adesida Road', office: 'Alagbaka', town: "Oba's Palace, Akure" };
 const EVENTS = [
   { ic: '🔦', t: 'NEPA took light', b: 'You bought fuel for the generator.', m: -2000 },
   { ic: '👖', t: 'Lucky find', b: 'You found money in an old trouser pocket!', m: 1500 },
   { ic: '🧳', t: 'Cousin from Lagos', b: 'He visited and you had to feed him.', m: -3000 },
   { ic: '💸', t: 'Generous tip', b: 'A customer gave you a big tip.', m: 2000 },
   { ic: '🦟', t: 'Malaria', b: 'Hospital and drugs. You need to rest.', m: -3000, h: -20 },
-  { ic: '👗', t: 'Aso-ebi wahala', b: 'A friend\'s wedding contribution is due.', m: -4000 },
+  { ic: '👗', t: 'Aso-ebi wahala', b: "A friend's wedding contribution is due.", m: -4000 },
   { ic: '🎉', t: 'Surprise bonus', b: 'A client paid you extra!', m: 5000 },
   { ic: '🌧️', t: 'Heavy rain', b: 'You were stuck indoors all day.', e: -15 },
   { ic: '🍛', t: 'Jollof rice', b: 'A neighbour shared food with you.', h: 10 },
@@ -261,8 +242,7 @@ const EVENTS = [
   { ic: '🙏', t: 'Community support', b: 'Your community gave you food support.', m: 1000, h: 5 },
 ];
 
-let me = null, S = null, chans = [], saveT = null, soundOn = true, playersCache = [], lbT = null;
-let scene = 'home', lastMoney = null;
+let me = null, S = null, chans = [], saveT = null, soundOn = true, playersCache = [], lbT = null, lastMoney = null;
 
 // ---------- sound ----------
 let ac = null;
@@ -277,7 +257,6 @@ function beep(f, d = 0.12) {
 }
 const good = () => { beep(660); setTimeout(() => beep(880), 110); };
 const bad = () => beep(200, 0.25);
-
 function toast(msg) {
   const t = $('toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 3500);
@@ -289,74 +268,360 @@ function showModal(ic, title, body, btn) {
 }
 $('mOk').onclick = () => $('modal').classList.remove('show');
 
-// ---------- scenery (drawn as SVG, no image files needed) ----------
+// ---------- login backdrop ----------
 const SKY = [['#6fb8ee', '#ffd9a3'], ['#2f8fe0', '#cdeeff'], ['#4a3290', '#ff8a5c'], ['#050818', '#1d2c70']];
-const HILL = [['#4c8f55', '#2f6f3d'], ['#3f8a4d', '#2a6b38'], ['#4a4378', '#2c2a55'], ['#14213a', '#0c1426']];
-const GROUND = ['#6e9a52', '#5f8c46', '#4a4a6e', '#0f1a2b'];
-
-let sceneN = 0;
-function sceneSVG(place, phase) {
-  const gid = 'sk' + (++sceneN);
-  const [skyT, skyB] = SKY[phase], [h1, h2] = HILL[phase], gr = GROUND[phase];
-  const night = phase === 3, dusk = phase === 2;
-  const lit = night || dusk ? '#ffe08a' : '#9fd3f5';
-  const sun = [[70, 78, '#fff1a8'], [210, 34, '#fff6c9'], [330, 100, '#ffb36b'], [310, 42, '#f2f4ff']][phase];
-  let s = `<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${skyT}"/><stop offset="1" stop-color="${skyB}"/></linearGradient></defs>
-    <rect width="400" height="220" fill="url(#${gid})"/>`;
+(function heroDraw() {
+  const h = new Date().getHours(), ph = h < 11 ? 0 : h < 16 ? 1 : h < 19 ? 2 : 3;
+  const [t, b] = SKY[ph], night = ph === 3;
+  const hill = ['#2f6f3d', '#2a6b38', '#2c2a55', '#0c1426'][ph], hill2 = ['#4c8f55', '#3f8a4d', '#4a4378', '#14213a'][ph], gr = ['#6e9a52', '#5f8c46', '#4a4a6e', '#0f1a2b'][ph];
+  const lit = night || ph === 2 ? '#ffe08a' : '#9fd3f5';
+  let s = `<svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="400" height="220" fill="url(#hg)"/>`;
   if (night) for (let i = 0; i < 22; i++) s += `<circle cx="${(i * 53) % 400}" cy="${(i * 29) % 110 + 6}" r="${i % 3 ? 1 : 1.8}" fill="#fff" opacity=".8"/>`;
-  s += `<circle cx="${sun[0]}" cy="${sun[1]}" r="${night ? 14 : 20}" fill="${sun[2]}"/>`;
-  if (!night) s += `<g fill="#fff" opacity=".85"><ellipse cx="110" cy="50" rx="30" ry="9"/><ellipse cx="132" cy="44" rx="20" ry="8"/><ellipse cx="300" cy="70" rx="26" ry="8"/></g>`;
-  // Idanre-style rock hills behind the town
-  s += `<path d="M0 150 Q40 95 85 125 Q120 80 170 120 Q230 70 280 118 Q330 90 400 140 L400 220 L0 220Z" fill="${h2}"/>`;
-  s += `<path d="M0 165 Q70 125 140 150 T270 145 T400 160 L400 220 L0 220Z" fill="${h1}"/>`;
-  s += `<rect y="172" width="400" height="48" fill="${gr}"/>`;
+  s += `<circle cx="${[70, 210, 330, 310][ph]}" cy="${[78, 34, 100, 42][ph]}" r="${night ? 14 : 20}" fill="${['#fff1a8', '#fff6c9', '#ffb36b', '#f2f4ff'][ph]}"/>`;
+  s += `<path d="M0 150 Q40 95 85 125 Q120 80 170 120 Q230 70 280 118 Q330 90 400 140 L400 220 L0 220Z" fill="${hill}"/><path d="M0 165 Q70 125 140 150 T270 145 T400 160 L400 220 L0 220Z" fill="${hill2}"/><rect y="172" width="400" height="48" fill="${gr}"/>`;
+  s += `<rect x="30" y="130" width="70" height="50" fill="#c9b79a"/><rect x="300" y="125" width="70" height="55" fill="#c9b79a"/><rect x="140" y="112" width="120" height="68" fill="#f0e6d0"/><path d="M150 112 Q200 52 250 112Z" fill="#b4492f"/><rect x="198" y="48" width="4" height="24" fill="#ddd"/><circle cx="200" cy="46" r="5" fill="#ffc61a"/><rect x="188" y="146" width="24" height="34" fill="#5b3a24"/><rect x="155" y="130" width="12" height="14" rx="2" fill="${lit}"/><rect x="232" y="130" width="12" height="14" rx="2" fill="${lit}"/><rect x="44" y="142" width="12" height="14" rx="2" fill="${lit}"/><rect x="314" y="140" width="12" height="14" rx="2" fill="${lit}"/></svg>`;
+  $('heroScene').style.background = t; $('heroScene').innerHTML = s;
+})();
 
-  const win = (x, y, w = 12, h = 14) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${lit}"/>`;
-  if (place === 'home') {
-    s += `<rect x="150" y="120" width="110" height="60" fill="#eadfc4"/><polygon points="140,122 205,78 270,122" fill="#b4492f"/>
-      <rect x="198" y="146" width="22" height="34" fill="#6b3e26"/>${win(162, 136)}${win(232, 136)}
-      <rect x="40" y="130" width="8" height="50" fill="#6b4a2b"/><circle cx="44" cy="124" r="22" fill="#2d8a47"/><circle cx="62" cy="134" r="16" fill="#35a055"/>
-      <rect x="320" y="150" width="6" height="30" fill="#6b4a2b"/><path d="M323 150 q-26 -18 -34 4 M323 150 q26 -18 34 4 M323 150 q-6 -26 -2 -34" stroke="#2d8a47" stroke-width="5" fill="none"/>`;
-  } else if (place === 'market') {
-    [[30, '#e4572e'], [145, '#ffc61a'], [260, '#1fa35b']].forEach(([x, c]) => {
-      s += `<rect x="${x}" y="140" width="100" height="40" fill="#8b5a33"/><path d="M${x - 8} 140 L${x + 12} 112 H${x + 88} L${x + 108} 140Z" fill="${c}"/>
-        <path d="M${x - 8} 140 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q8 10 16 0" fill="${c}"/>
-        <circle cx="${x + 24}" cy="150" r="7" fill="#e03b2d"/><circle cx="${x + 40}" cy="152" r="7" fill="#e03b2d"/><circle cx="${x + 56}" cy="150" r="7" fill="#f2a31b"/><circle cx="${x + 72}" cy="152" r="7" fill="#f2a31b"/>`;
-    });
-  } else if (place === 'campus') {
-    s += `<rect x="70" y="102" width="260" height="78" fill="#dcd4c2"/><polygon points="60,104 200,62 340,104" fill="#a9402b"/>`;
-    for (let i = 0; i < 6; i++) s += `<rect x="${90 + i * 45}" y="112" width="12" height="68" fill="#f3eee0"/>`;
-    s += `<rect x="176" y="140" width="48" height="40" fill="#5b3a24"/><rect x="198" y="38" width="3" height="30" fill="#ddd"/><path d="M201 38 h24 v14 h-24z" fill="#1fa35b"/>`;
-  } else if (place === 'office') {
-    [[40, 90, 70], [120, 60, 100], [210, 80, 80], [290, 100, 60]].forEach(([x, y, w]) => {
-      s += `<rect x="${x}" y="${y + 30}" width="${w - 8}" height="${150 - y}" fill="#5a5f85"/>`;
-      for (let r = 0; r < 6; r++) for (let c = 0; c < Math.floor((w - 16) / 18); c++) s += win(x + 8 + c * 18, y + 40 + r * 18, 10, 10);
-    });
-  } else if (place === 'road') {
-    s += `<rect y="165" width="400" height="55" fill="#3a3a48"/><g fill="#ffe066"><rect x="20" y="190" width="40" height="5"/><rect x="120" y="190" width="40" height="5"/><rect x="220" y="190" width="40" height="5"/><rect x="320" y="190" width="40" height="5"/></g>
-      <g transform="translate(205,138)"><path d="M0 40 H80 V14 Q62 -8 40 -8 H8 Q0 -8 0 4Z" fill="#ffc61a"/><rect x="0" y="22" width="80" height="12" fill="#1c1c1c"/>
-      <rect x="10" y="0" width="26" height="16" fill="${lit}"/><circle cx="16" cy="44" r="10" fill="#111"/><circle cx="66" cy="44" r="10" fill="#111"/><circle cx="16" cy="44" r="4" fill="#999"/><circle cx="66" cy="44" r="4" fill="#999"/></g>`;
-  } else { // town with palace
-    s += `<rect x="30" y="130" width="70" height="50" fill="#c9b79a"/>${win(44, 142)}${win(70, 142)}
-      <rect x="300" y="125" width="70" height="55" fill="#c9b79a"/>${win(314, 140)}${win(340, 140)}
-      <rect x="140" y="112" width="120" height="68" fill="#f0e6d0"/><path d="M150 112 Q200 52 250 112Z" fill="#b4492f"/>
-      <rect x="198" y="48" width="4" height="24" fill="#ddd"/><circle cx="200" cy="46" r="5" fill="#ffc61a"/>
-      <rect x="188" y="146" width="24" height="34" fill="#5b3a24"/>${win(155, 130)}${win(232, 130)}`;
+// ================= THE WORLD =================
+const WW = 1200, WH = 860;
+const LOCS = [
+  { id: 'home',   type: 'home',   name: 'Your room, Ijapo',      icon: '🏠', x: 110, y: 220, w: 180, h: 130, rx: 200, ry: 392 },
+  { id: 'campus', type: 'campus', name: 'FUTA short courses',    icon: '🎓', x: 420, y: 210, w: 240, h: 140, rx: 540, ry: 392 },
+  { id: 'palace', type: 'palace', name: "Oba's Palace",          icon: '👑', x: 830, y: 195, w: 230, h: 155, rx: 945, ry: 392 },
+  { id: 'park',   type: 'park',   name: 'Keke Park, Oja Oba',    icon: '🛺', x: 100, y: 600, w: 210, h: 100, rx: 205, ry: 732 },
+  { id: 'market', type: 'market', name: 'Isikan Market',         icon: '🍅', x: 420, y: 590, w: 260, h: 110, rx: 550, ry: 732 },
+  { id: 'office', type: 'office', name: 'Alagbaka offices',      icon: '🏢', x: 830, y: 575, w: 240, h: 125, rx: 945, ry: 732 },
+];
+const LOC = Object.fromEntries(LOCS.map(l => [l.id, l]));
+const ROADS = [[0, 430, WW, 100], [700, 150, 90, WH - 150], [0, 745, WW, 70]]; // x,y,w,h
+const TREES = [[60,180],[330,200],[380,300],[700,180],[790,260],[1100,230],[1150,330],[60,420],[1140,440],[390,520],[330,640],[740,610],[1110,600],[780,840],[60,830],[380,830],[1150,830],[720,560],[1130,540],[360,560]];
+const COLORS = ['#e4572e', '#1fa35b', '#5ec2ff', '#ffc61a', '#b06cf0', '#ff8fb1', '#37c7b6', '#f08a3c'];
+const hashCol = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return COLORS[h % COLORS.length]; };
+
+const cv = $('cv'), ctx = cv.getContext('2d');
+let vw = 0, vh = 0, dpr = 1, zoom = 1;
+function resizeWorld() {
+  const w = $('world'); const r = w.getBoundingClientRect();
+  if (!r.width) return;
+  dpr = Math.min(2, window.devicePixelRatio || 1);
+  vw = r.width; vh = r.height; cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
+  zoom = clampN(vh / 520, 0.75, 1.6);
+}
+new ResizeObserver(resizeWorld).observe($('world'));
+window.addEventListener('resize', resizeWorld);
+
+const P = { x: 700, y: 485, dir: 1, walk: 0, moving: false, bob: 0, bubble: null };
+let target = null, keys = {}, joy = { x: 0, y: 0 }, others = {}, floats = [], cam = { x: 0, y: 0 };
+let curLoc = null, sheetKey = '', clock = 0, worldCh = null, worldReady = false, lastSent = { x: -9, y: -9 }, lastSentT = 0;
+
+// ambient life
+const NPCS = Array.from({ length: 7 }, (_, i) => ({ x: 150 + i * 150, y: i % 2 ? 480 : 400 + (i * 37) % 60, tx: 0, ty: 0, wait: Math.random() * 3, col: ['#7a7fb5', '#b58a7a', '#7ab58f', '#b5a77a', '#a37ab5', '#7aa9b5', '#b57a8f'][i], walk: Math.random() * 6, moving: false, dir: 1 }));
+const KEKES = [{ x: 100, lane: 468, v: 70, c: '#ffc61a' }, { x: 900, lane: 508, v: -90, c: '#ffc61a' }, { x: 400, lane: 468, v: 55, c: '#1fa35b' }, { x: 745, lane: 300, v: 60, c: '#ffc61a', vertical: true }];
+const CLOUDS = [{ x: 100, y: 120, r: 120, v: 9 }, { x: 600, y: 420, r: 150, v: 6 }, { x: 1000, y: 700, r: 130, v: 8 }];
+
+function phaseNow() { return !S ? 0 : S.finished ? 3 : Math.min(3, SLOTS - S.slots); }
+function blocked(x, y) {
+  for (const b of LOCS) if (x > b.x - 12 && x < b.x + b.w + 12 && y > b.y + 24 && y < b.y + b.h + 6) return true;
+  return false;
+}
+function tryMove(mx, my) {
+  const nx = clampN(P.x + mx, 16, WW - 16), ny = clampN(P.y + my, 160, WH - 16);
+  if (!blocked(nx, ny)) { P.x = nx; P.y = ny; }
+}
+function setTargetFromEvent(e) {
+  const r = cv.getBoundingClientRect();
+  const sx = (e.clientX - r.left) / zoom + cam.x, sy = (e.clientY - r.top) / zoom + cam.y;
+  target = { x: clampN(sx, 16, WW - 16), y: clampN(sy, 160, WH - 16) };
+}
+let dragging = false;
+cv.addEventListener('pointerdown', e => { dragging = true; cv.setPointerCapture(e.pointerId); setTargetFromEvent(e); });
+cv.addEventListener('pointermove', e => { if (dragging) setTargetFromEvent(e); });
+cv.addEventListener('pointerup', () => { dragging = false; });
+cv.addEventListener('pointercancel', () => { dragging = false; });
+window.addEventListener('keydown', e => {
+  if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  const k = { ArrowLeft: 'l', a: 'l', ArrowRight: 'r', d: 'r', ArrowUp: 'u', w: 'u', ArrowDown: 'd', s: 'd' }[e.key];
+  if (k) { keys[k] = true; e.preventDefault(); }
+});
+window.addEventListener('keyup', e => { const k = { ArrowLeft: 'l', a: 'l', ArrowRight: 'r', d: 'r', ArrowUp: 'u', w: 'u', ArrowDown: 'd', s: 'd' }[e.key]; if (k) keys[k] = false; });
+// on-screen joystick (touch devices)
+(function joystick() {
+  const pad = $('pad'), knob = $('knob'); let id = null;
+  const move = e => {
+    const r = pad.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    let dx = e.clientX - cx, dy = e.clientY - cy; const d = Math.hypot(dx, dy), m = 45;
+    if (d > m) { dx = dx / d * m; dy = dy / d * m; }
+    knob.style.left = 45 + dx + 'px'; knob.style.top = 45 + dy + 'px';
+    joy.x = Math.abs(dx) > 8 ? dx / m : 0; joy.y = Math.abs(dy) > 8 ? dy / m : 0; target = null;
+  };
+  pad.addEventListener('pointerdown', e => { id = e.pointerId; pad.setPointerCapture(id); move(e); e.stopPropagation(); });
+  pad.addEventListener('pointermove', e => { if (e.pointerId === id) move(e); });
+  const end = e => { if (e.pointerId !== id) return; id = null; joy = { x: 0, y: 0 }; knob.style.left = '45px'; knob.style.top = '45px'; };
+  pad.addEventListener('pointerup', end); pad.addEventListener('pointercancel', end);
+})();
+
+// ---- multiplayer: other players walking around (Supabase broadcast, no database table) ----
+function onlineCount() { return 1 + Object.keys(others).length; }
+function openWorldChannel() {
+  worldCh = sb.channel('akure-world', { config: { broadcast: { self: false } } });
+  worldCh.on('broadcast', { event: 'pos' }, ({ payload: p }) => {
+    if (!p || p.id === me.id) return;
+    const o = others[p.id];
+    if (o) { o.tx = p.x; o.ty = p.y; o.last = performance.now(); o.name = p.n; }
+    else others[p.id] = { id: p.id, name: p.n, x: p.x, y: p.y, tx: p.x, ty: p.y, last: performance.now(), walk: 0, dir: 1, moving: false, col: hashCol(p.n), bubble: null };
+  }).subscribe(st => { if (st === 'SUBSCRIBED') worldReady = true; });
+  chans.push(worldCh);
+}
+function sendPos(now) {
+  if (!worldReady) return;
+  const n = onlineCount();
+  const gap = Math.min(3000, Math.max(300, 250 * (n - 1))); // slows down automatically when many players are online
+  const moved = Math.abs(P.x - lastSent.x) + Math.abs(P.y - lastSent.y) > 2;
+  if ((moved && now - lastSentT > gap) || now - lastSentT > 4000) {
+    worldCh.send({ type: 'broadcast', event: 'pos', payload: { id: me.id, n: me.username, x: Math.round(P.x), y: Math.round(P.y) } });
+    lastSent = { x: P.x, y: P.y }; lastSentT = now;
   }
-  return s + '</svg>';
 }
-function phaseNow() { return S.finished ? 3 : Math.min(3, SLOTS - S.slots); }
-function drawScene() { $('sceneBox').innerHTML = sceneSVG(scene, phaseNow()); $('place').textContent = '📍 ' + PLACE_NAMES[scene]; $('phase').textContent = PHASES[phaseNow()]; }
-function goTo(p) { scene = p; }
-function hop() { const a = $('avatar'); a.classList.remove('hop'); void a.offsetWidth; a.classList.add('hop'); }
-function floatTxt(amt) {
-  const f = document.createElement('div'); f.className = 'floater ' + (amt >= 0 ? 'up' : 'down');
-  f.textContent = (amt >= 0 ? '+' : '-') + naira(Math.abs(amt));
-  document.querySelector('.scene').appendChild(f); setTimeout(() => f.remove(), 1400);
+
+function update(dt, now) {
+  clock += dt;
+  let dx = (keys.r ? 1 : 0) - (keys.l ? 1 : 0) + joy.x, dy = (keys.d ? 1 : 0) - (keys.u ? 1 : 0) + joy.y;
+  if (keys.l || keys.r || keys.u || keys.d) target = null;
+  if (!dx && !dy && target) {
+    const ddx = target.x - P.x, ddy = target.y - P.y, d = Math.hypot(ddx, ddy);
+    if (d > 6) { dx = ddx / d; dy = ddy / d; } else target = null;
+  }
+  const len = Math.hypot(dx, dy); P.moving = len > 0.05;
+  if (P.moving) {
+    const k = Math.min(1, len); dx = dx / len * k; dy = dy / len * k;
+    const sp = 175 * dt; const ox = P.x, oy = P.y;
+    tryMove(dx * sp, 0); tryMove(0, dy * sp);
+    if (Math.abs(dx) > 0.1) P.dir = dx > 0 ? 1 : -1;
+    P.walk += dt * 11;
+    if (target && Math.abs(P.x - ox) + Math.abs(P.y - oy) < 0.01) target = null; // stuck on a wall
+  }
+  P.bob = Math.max(0, P.bob - dt * 3);
+  if (P.bubble && now > P.bubble.until) P.bubble = null;
+
+  NPCS.forEach(n => {
+    if (n.wait > 0) { n.wait -= dt; n.moving = false; return; }
+    if (!n.tx) { n.tx = 40 + Math.random() * (WW - 80); n.ty = 400 + Math.random() * 90; }
+    const ddx = n.tx - n.x, ddy = n.ty - n.y, d = Math.hypot(ddx, ddy);
+    if (d < 5) { n.tx = 0; n.wait = 1 + Math.random() * 4; return; }
+    n.moving = true; n.x += ddx / d * 42 * dt; n.y += ddy / d * 42 * dt; n.walk += dt * 8; n.dir = ddx > 0 ? 1 : -1;
+  });
+  KEKES.forEach(k => {
+    if (k.vertical) { k.y = (k.y || k.lane) + k.v * dt; if (k.y > WH + 40) k.y = 140; if (k.y < 120) k.y = WH; }
+    else { k.x += k.v * dt; if (k.x > WW + 60) k.x = -60; if (k.x < -60) k.x = WW + 60; }
+  });
+  CLOUDS.forEach(c => { c.x += c.v * dt; if (c.x > WW + 200) c.x = -200; });
+  for (const id in others) {
+    const o = others[id];
+    if (now - o.last > 12000) { delete others[id]; continue; }
+    const ddx = o.tx - o.x, ddy = o.ty - o.y, d = Math.hypot(ddx, ddy);
+    o.moving = d > 3;
+    const f = Math.min(1, dt * 5); o.x += ddx * f; o.y += ddy * f;
+    if (o.moving) { o.walk += dt * 11; if (Math.abs(ddx) > 2) o.dir = ddx > 0 ? 1 : -1; }
+    if (o.bubble && now > o.bubble.until) o.bubble = null;
+  }
+  floats = floats.filter(f => (f.t += dt) < 1.4);
+
+  // nearest place
+  let near = null;
+  for (const l of LOCS) if (Math.hypot(P.x - l.rx, P.y - l.ry) < 58) near = l;
+  if ((near && near.id) !== (curLoc && curLoc.id)) { curLoc = near; renderSheet(); }
+  $('online').textContent = '👥 ' + onlineCount() + ' online';
+  sendPos(now);
 }
-// login screen backdrop
-(() => { const h = new Date().getHours(); const ph = h < 11 ? 0 : h < 16 ? 1 : h < 19 ? 2 : 3; $('heroScene').style.background = SKY[ph][0]; $('heroScene').innerHTML = sceneSVG('town', ph); })();
+
+// ---- drawing ----
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function fillRR(x, y, w, h, r, c) { ctx.fillStyle = c; rr(x, y, w, h, r); ctx.fill(); }
+function drawChar(x, y, col, dir, walk, moving, lift) {
+  ctx.save(); ctx.translate(x, y - (lift || 0));
+  ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(0, (lift || 0), 11, 4, 0, 0, 7); ctx.fill();
+  const sw = moving ? Math.sin(walk) * 5 : 0;
+  ctx.strokeStyle = '#2b2140'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-4, -10); ctx.lineTo(-4 + sw, 0); ctx.moveTo(4, -10); ctx.lineTo(4 - sw, 0); ctx.stroke();
+  fillRR(-9, -29 + (moving ? Math.abs(Math.sin(walk)) * -1.5 : 0), 18, 21, 6, col);
+  ctx.fillStyle = '#8d5a3b'; ctx.beginPath(); ctx.arc(0, -35, 8, 0, 7); ctx.fill();
+  ctx.fillStyle = '#1d1420'; ctx.beginPath(); ctx.arc(0, -36, 8.6, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dir * 3, -34, 1.6, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function drawTag(x, y, name, bubble, mine) {
+  ctx.font = '700 12px "Trebuchet MS",sans-serif'; ctx.textAlign = 'center';
+  const w = ctx.measureText(name).width + 12;
+  fillRR(x - w / 2, y - 62, w, 17, 8, mine ? '#ffc61a' : '#171326d0');
+  ctx.fillStyle = mine ? '#2a1d00' : '#fff'; ctx.fillText(name, x, y - 49.5);
+  if (bubble) {
+    ctx.font = '600 13px "Trebuchet MS",sans-serif';
+    const t = bubble.text.length > 40 ? bubble.text.slice(0, 40) + '…' : bubble.text, bw = ctx.measureText(t).width + 18;
+    fillRR(x - bw / 2, y - 92, bw, 24, 10, '#fff');
+    ctx.beginPath(); ctx.moveTo(x - 5, y - 69); ctx.lineTo(x + 5, y - 69); ctx.lineTo(x, y - 62); ctx.fill();
+    ctx.fillStyle = '#171326'; ctx.fillText(t, x, y - 75);
+  }
+}
+function windowsLit(ph) { return ph >= 2 ? '#ffe08a' : '#9fd3f5'; }
+function drawBuilding(l, ph) {
+  const { x, y, w, h } = l, lit = windowsLit(ph);
+  ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.fillRect(x + 8, y + h - 4, w, 12);
+  if (l.type === 'home') {
+    fillRR(x, y + 40, w, h - 40, 4, '#eadfc4');
+    ctx.fillStyle = '#b4492f'; ctx.beginPath(); ctx.moveTo(x - 12, y + 48); ctx.lineTo(x + w / 2, y); ctx.lineTo(x + w + 12, y + 48); ctx.fill();
+    fillRR(x + w / 2 - 13, y + h - 42, 26, 42, 3, '#6b3e26'); fillRR(x + 20, y + 62, 24, 22, 3, lit); fillRR(x + w - 44, y + 62, 24, 22, 3, lit);
+  } else if (l.type === 'campus') {
+    fillRR(x, y + 34, w, h - 34, 3, '#dcd4c2'); fillRR(x - 8, y, w + 16, 38, 4, '#a9402b');
+    for (let i = 0; i < 6; i++) fillRR(x + 14 + i * 40, y + 40, 10, h - 40, 2, '#f6f1e3');
+    fillRR(x + w / 2 - 16, y + h - 44, 32, 44, 3, '#5b3a24');
+    ctx.fillStyle = '#ddd'; ctx.fillRect(x + w - 20, y - 34, 3, 40);
+    ctx.fillStyle = '#1fa35b'; ctx.beginPath(); const fw = Math.sin(clock * 4) * 3; ctx.moveTo(x + w - 17, y - 34); ctx.quadraticCurveTo(x + w + 2, y - 30 + fw, x + w + 18, y - 34); ctx.lineTo(x + w + 18, y - 18); ctx.quadraticCurveTo(x + w + 2, y - 14 - fw, x + w - 17, y - 18); ctx.fill();
+  } else if (l.type === 'palace') {
+    fillRR(x, y + 58, w, h - 58, 4, '#f0e6d0');
+    fillRR(x - 6, y + 40, 40, h - 40, 4, '#e6d9bb'); fillRR(x + w - 34, y + 40, 40, h - 40, 4, '#e6d9bb');
+    ctx.fillStyle = '#c9962b'; ctx.beginPath(); ctx.arc(x + w / 2, y + 62, 62, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#e9b949'; ctx.beginPath(); ctx.arc(x + w / 2 - 14, y + 40, 16, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#ddd'; ctx.fillRect(x + w / 2 - 2, y - 6, 4, 22); fillRR(x + w / 2 - 6, y - 14, 12, 12, 6, '#e4572e');
+    fillRR(x + w / 2 - 17, y + h - 52, 34, 52, 17, '#5b3a24');
+    for (let i = 0; i < 4; i++) fillRR(x + 40 + i * 44 + (i > 1 ? 38 : 0), y + 84, 16, 22, 3, lit);
+  } else if (l.type === 'park') {
+    fillRR(x, y + 36, w, h - 36, 3, '#8a8a95');
+    fillRR(x - 6, y, w + 12, 36, 4, '#1fa35b');
+    [0, 1, 2].forEach(i => { const kx = x + 16 + i * 62; fillRR(kx, y + 52, 48, 30, 8, i === 1 ? '#1fa35b' : '#ffc61a'); fillRR(kx + 4, y + 70, 40, 7, 3, '#1c1c1c'); ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(kx + 10, y + 86, 6, 0, 7); ctx.arc(kx + 38, y + 86, 6, 0, 7); ctx.fill(); fillRR(kx + 6, y + 56, 20, 12, 3, lit); });
+  } else if (l.type === 'market') {
+    const cols = ['#e4572e', '#ffc61a', '#1fa35b'];
+    for (let i = 0; i < 3; i++) {
+      const sx = x + i * (w / 3);
+      fillRR(sx + 3, y + 40, w / 3 - 8, h - 40, 3, '#8b5a33'); ctx.fillStyle = cols[i]; ctx.beginPath(); ctx.moveTo(sx - 2, y + 44); ctx.lineTo(sx + 10, y + 8); ctx.lineTo(sx + w / 3 - 18, y + 8); ctx.lineTo(sx + w / 3 - 4, y + 44); ctx.fill();
+      for (let k = 0; k < 4; k++) { ctx.fillStyle = ['#e03b2d', '#f2a31b', '#58b947'][(i + k) % 3]; ctx.beginPath(); ctx.arc(sx + 18 + k * 17, y + 62 + (k % 2) * 6, 7, 0, 7); ctx.fill(); }
+    }
+  } else if (l.type === 'office') {
+    fillRR(x, y + 14, w, h - 14, 4, '#59608a'); fillRR(x - 4, y, w + 8, 18, 3, '#3e4468');
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 8; c++) fillRR(x + 12 + c * 28, y + 28 + r * 26, 16, 16, 2, lit);
+    fillRR(x + w / 2 - 15, y + h - 40, 30, 40, 3, '#2b2d47');
+  }
+  // sign
+  const isJob = S && S.job && jobObj() && jobObj().loc === l.id;
+  const label = l.icon + ' ' + l.name + (isJob ? '  💼' : '');
+  ctx.font = '700 13px "Trebuchet MS",sans-serif'; ctx.textAlign = 'center';
+  const tw = ctx.measureText(label).width + 16;
+  fillRR(x + w / 2 - tw / 2, y - 30 - (l.type === 'palace' ? 18 : 0), tw, 21, 10, '#171326e6');
+  ctx.fillStyle = '#fff'; ctx.fillText(label, x + w / 2, y - 15 - (l.type === 'palace' ? 18 : 0));
+}
+function goalLoc() {
+  if (!S || S.finished) return null;
+  if (S.slots === 0) return 'home';
+  const j = jobObj(); if (!j) return 'park';
+  return j.loc;
+}
+function drawKeke(k, vertical) {
+  ctx.save(); ctx.translate(k.x, vertical ? k.y : k.lane);
+  if (vertical) ctx.rotate(Math.PI / 2 * (k.v > 0 ? 1 : -1)); else if (k.v < 0) ctx.scale(-1, 1);
+  fillRR(-22, -14, 44, 22, 7, k.c); fillRR(-22, 2, 44, 7, 2, '#1c1c1c'); fillRR(2, -12, 14, 10, 2, '#cfe9ff');
+  ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(-13, 11, 6, 0, 7); ctx.arc(14, 11, 6, 0, 7); ctx.fill(); ctx.restore();
+}
+function drawWorld(now) {
+  const ph = phaseNow();
+  ctx.setTransform(dpr * zoom, 0, 0, dpr * zoom, 0, 0);
+  const vwW = vw / zoom, vhW = vh / zoom;
+  cam.x = vwW >= WW ? (WW - vwW) / 2 : clampN(P.x - vwW / 2, 0, WW - vwW);
+  cam.y = vhW >= WH ? (WH - vhW) / 2 : clampN(P.y - vhW / 2, 0, WH - vhW);
+  ctx.fillStyle = '#16122a'; ctx.fillRect(0, 0, vwW, vhW);
+  ctx.translate(-cam.x, -cam.y);
+  const g = ['#6fa957', '#62a04b', '#4f7a4a', '#2a4a3a'][ph];
+  ctx.fillStyle = g; ctx.fillRect(0, 140, WW, WH - 140);
+  // hills (Idanre-style rock)
+  ctx.fillStyle = ['#8a8f99', '#7d838e', '#5a5878', '#232a40'][ph];
+  ctx.beginPath(); ctx.moveTo(0, 150); for (let i = 0; i <= 12; i++) ctx.lineTo(i * 100, 150 - 36 - ((i * 47) % 70)); ctx.lineTo(WW, 150); ctx.fill();
+  ctx.fillStyle = ['#5d7a4a', '#527044', '#3c4c55', '#18283a'][ph];
+  ctx.beginPath(); ctx.moveTo(0, 160); for (let i = 0; i <= 8; i++) ctx.lineTo(i * 150, 150 - ((i * 31) % 40)); ctx.lineTo(WW, 160); ctx.lineTo(WW, 180); ctx.lineTo(0, 180); ctx.fill();
+  ctx.fillStyle = ['#ffe9a8', '#fff3c4', '#ffb36b', '#f2f4ff'][ph]; ctx.beginPath(); ctx.arc(1050 - ph * 10, 70 + ph * 6, 22, 0, 7); ctx.fill();
+  // roads
+  ROADS.forEach(([x, y, w, h]) => { ctx.fillStyle = ph === 3 ? '#4a3a33' : '#b9794f'; ctx.fillRect(x, y, w, h); });
+  ctx.fillStyle = ph === 3 ? '#6a5a50' : '#e8d3a8';
+  for (let x = 20; x < WW; x += 70) ctx.fillRect(x, 478, 34, 4);
+  for (let y = 170; y < WH; y += 70) ctx.fillRect(743, y, 4, 34);
+  // footpaths to doors
+  LOCS.forEach(l => { ctx.fillStyle = ph === 3 ? '#5a4a40' : '#d2a779'; if (l.ry < 430) ctx.fillRect(l.rx - 18, l.ry, 36, 430 - l.ry); else ctx.fillRect(l.rx - 18, l.ry - 20, 36, 745 - l.ry + 20); });
+  // trees
+  TREES.forEach(([x, y], i) => { ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(x, y + 4, 22, 8, 0, 0, 7); ctx.fill(); fillRR(x - 4, y - 24, 8, 28, 2, '#6b4a2b'); const sway = Math.sin(clock * 1.5 + i) * 2; ctx.fillStyle = ph === 3 ? '#1f4a35' : '#2d8a47'; ctx.beginPath(); ctx.arc(x + sway, y - 34, 22, 0, 7); ctx.fill(); ctx.fillStyle = ph === 3 ? '#265a40' : '#37a456'; ctx.beginPath(); ctx.arc(x + 8 + sway, y - 28, 14, 0, 7); ctx.fill(); });
+  // doors (glowing rings)
+  const gl = goalLoc();
+  LOCS.forEach(l => {
+    const pulse = 1 + Math.sin(clock * 4) * 0.08, isGoal = gl === l.id;
+    ctx.lineWidth = 4; ctx.strokeStyle = isGoal ? '#6dff9b' : '#ffffffaa'; ctx.fillStyle = isGoal ? 'rgba(109,255,155,.28)' : 'rgba(255,255,255,.18)';
+    ctx.beginPath(); ctx.arc(l.rx, l.ry, 30 * pulse, 0, 7); ctx.fill(); ctx.stroke();
+    if (isGoal) { ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.fillText('⬇️', l.rx, l.ry - 40 + Math.sin(clock * 6) * 5); }
+  });
+  // sort everything that stands up by y
+  const items = [];
+  LOCS.forEach(l => items.push({ y: l.y + l.h, f: () => drawBuilding(l, ph) }));
+  NPCS.forEach(n => items.push({ y: n.y, f: () => drawChar(n.x, n.y, n.col, n.dir, n.walk, n.moving) }));
+  KEKES.forEach(k => items.push({ y: k.vertical ? (k.y || k.lane) : k.lane, f: () => drawKeke(k, k.vertical) }));
+  Object.values(others).forEach(o => items.push({ y: o.y, f: () => { drawChar(o.x, o.y, o.col, o.dir, o.walk, o.moving); drawTag(o.x, o.y, o.name, o.bubble, false); } }));
+  items.push({ y: P.y, f: () => { drawChar(P.x, P.y, hashCol(me.username), P.dir, P.walk, P.moving, P.bob * 14); drawTag(P.x, P.y - P.bob * 14, me.username, P.bubble, true); const m = mood(); if (m) { ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(m, P.x + 22, P.y - 50); } } });
+  items.sort((a, b) => a.y - b.y).forEach(i => i.f());
+  // tap target marker
+  if (target) { ctx.strokeStyle = '#ffffffcc'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(target.x, target.y, 8 + Math.sin(clock * 8) * 2, 0, 7); ctx.stroke(); }
+  // cloud shadows
+  if (ph < 2) { ctx.fillStyle = 'rgba(0,0,0,.07)'; CLOUDS.forEach(c => { ctx.beginPath(); ctx.ellipse(c.x, c.y, c.r, c.r * .45, 0, 0, 7); ctx.fill(); }); }
+  // floating money
+  floats.forEach(f => { ctx.globalAlpha = Math.max(0, 1 - f.t / 1.4); ctx.font = '900 22px "Trebuchet MS",sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#000'; const yy = P.y - 70 - f.t * 50; ctx.strokeText(f.txt, P.x, yy); ctx.fillStyle = f.up ? '#6dff9b' : '#ff7a6a'; ctx.fillText(f.txt, P.x, yy); ctx.globalAlpha = 1; });
+  // time-of-day tint + night glow
+  const tint = ['rgba(255,190,110,.10)', 'rgba(0,0,0,0)', 'rgba(255,100,60,.20)', 'rgba(8,12,60,.48)'][ph];
+  ctx.fillStyle = tint; ctx.fillRect(cam.x, cam.y, vwW, vhW);
+  if (ph >= 2) LOCS.forEach(l => { const gr = ctx.createRadialGradient(l.rx, l.ry, 4, l.rx, l.ry, 90); gr.addColorStop(0, 'rgba(255,224,138,.45)'); gr.addColorStop(1, 'rgba(255,224,138,0)'); ctx.fillStyle = gr; ctx.fillRect(l.rx - 90, l.ry - 90, 180, 180); });
+}
+function mood() { if (!S || S.finished) return ''; if (S.health < 30) return '🤒'; if (S.energy < 20) return '🥱'; if (S.money > 150000) return '😎'; return ''; }
+
+let lastTs = 0;
+function loop(ts) {
+  const dt = Math.min(0.05, (ts - lastTs) / 1000 || 0); lastTs = ts;
+  if (S && me && !$('tab-play').hidden && vw) { update(dt, ts); drawWorld(ts); }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ---------- what you can do at each place ----------
+function actBtn(ic, label, sub, fn, opts = {}) {
+  const b = document.createElement('button'); b.className = 'sa' + (opts.cls ? ' ' + opts.cls : '');
+  b.innerHTML = '<span class="ic"></span><b></b><small></small>';
+  b.children[0].textContent = ic; b.children[1].textContent = label; b.children[2].textContent = sub;
+  b.disabled = !!opts.off || S.finished; b.onclick = fn; return b;
+}
+function jobButtons(locId, box) {
+  JOBS.filter(j => j.loc === locId).forEach(j => {
+    if (S.job === j.id) box.appendChild(actBtn('💼', 'Work shift', naira(j.pay[0]) + '-' + naira(j.pay[1]) + ' · -' + j.energy + ' energy', doWork, { cls: 'job' }));
+    else box.appendChild(actBtn('📝', 'Take job: ' + j.name, S.skill < j.req ? 'Needs skill ' + j.req : naira(j.pay[0]) + '-' + naira(j.pay[1]) + ' a shift', () => takeJob(j.id), { off: S.skill < j.req }));
+  });
+}
+function renderSheet() {
+  const sh = $('sheet');
+  if (!curLoc || !S) { sh.hidden = true; $('world').classList.remove('sheeton'); return; }
+  $('world').classList.add('sheeton'); sh.hidden = false; sh.innerHTML = '';
+  const t = document.createElement('h3'); t.textContent = curLoc.icon + ' ' + curLoc.name;
+  const p = document.createElement('p'); const box = document.createElement('div'); box.className = 'sacts';
+  const l = curLoc.id;
+  if (l === 'home') {
+    p.textContent = 'Rest to get your energy back, or sleep to end the day.';
+    box.append(actBtn('😴', 'Rest', '+30 energy · uses an action', doRest), actBtn('🌙', 'Sleep: end day', S.slots ? 'You still have ' + S.slots + ' action(s)' : 'Night has fallen', endDay, { cls: 'go' }));
+  } else if (l === 'campus') {
+    p.textContent = 'Skill unlocks better jobs. Teachers work here.';
+    box.append(actBtn('📚', 'Study', '-₦1,000 · +1 skill · -30 energy', doStudy)); jobButtons(l, box);
+  } else if (l === 'market') {
+    p.textContent = 'Eat well, hustle for cash, or work a stall.';
+    box.append(actBtn('🍲', 'Good meal', '-₦2,500 · +15 health', doEat), actBtn('🛵', 'Side hustle', 'Risky · -20 energy', doHustle)); jobButtons(l, box);
+  } else if (l === 'park') {
+    p.textContent = 'Keke riders start here. No skill needed.'; jobButtons(l, box);
+  } else if (l === 'office') {
+    p.textContent = 'Government and tech jobs. They need skill.'; jobButtons(l, box);
+  } else if (l === 'palace') {
+    p.textContent = 'Check who is richest in Akure.';
+    box.append(actBtn('🏆', 'Notice board', 'See the leaderboard', () => document.querySelector('nav button[data-tab=board]').click()));
+  }
+  sh.append(t, p, box);
+}
 
 // ---------- auth ----------
 function cleanName() {
@@ -366,245 +631,190 @@ function cleanName() {
   return u;
 }
 const emailOf = u => u + '@akurelife.app';
-
 $('btnSignup').onclick = async () => {
   const u = cleanName(); if (!u) return;
   const { data, error } = await sb.auth.signUp({ email: emailOf(u), password: $('p').value });
   if (error) { toast(/registered|exists/i.test(error.message) ? 'That username is taken. Try another.' : error.message); return; }
   if (!data.session) { toast('Account made but no session. Check that "Confirm email" is OFF in Supabase.'); return; }
-  me = { id: data.user.id, username: u };
-  startGame(true);
+  me = { id: data.user.id, username: u }; startGame(true);
 };
 $('btnLogin').onclick = async () => {
   const u = cleanName(); if (!u) return;
   const { data, error } = await sb.auth.signInWithPassword({ email: emailOf(u), password: $('p').value });
   if (error) { toast('Wrong username or password'); return; }
-  me = { id: data.user.id, username: u };
-  startGame(false);
+  me = { id: data.user.id, username: u }; startGame(false);
 };
 $('btnLogout').onclick = async () => {
-  await saveNow();
-  chans.forEach(c => sb.removeChannel(c)); chans = [];
-  await sb.auth.signOut();
-  location.reload();
+  await saveNow(); chans.forEach(c => sb.removeChannel(c)); chans = [];
+  await sb.auth.signOut(); location.reload();
 };
-
 (async function boot() {
   const { data } = await sb.auth.getSession();
-  if (data.session) {
-    const email = data.session.user.email || '';
-    me = { id: data.session.user.id, username: email.split('@')[0] };
-    startGame(false);
-  }
+  if (data.session) { me = { id: data.session.user.id, username: (data.session.user.email || '').split('@')[0] }; startGame(false); }
 })();
 
 // ---------- game state ----------
-function newState() {
-  return { day: 1, money: 20000, energy: 100, health: 100, skill: 0, slots: SLOTS, strikes: 0, job: null, finished: false, log: ['Welcome to Akure! You have ' + naira(20000) + ' and a room in Ijapo.'] };
-}
+function newState() { return { day: 1, money: 20000, energy: 100, health: 100, skill: 0, slots: SLOTS, strikes: 0, job: null, finished: false, log: ['Welcome to Akure! You have ' + naira(20000) + ' and a room in Ijapo.'] }; }
 function toRow() {
-  return {
-    id: me.id, username: me.username, day: S.day, money: Math.round(S.money), job: S.job,
-    state: { energy: S.energy, health: S.health, skill: S.skill, slots: S.slots, strikes: S.strikes, finished: S.finished, log: S.log.slice(0, 8) },
-    updated_at: new Date().toISOString()
-  };
+  return { id: me.id, username: me.username, day: S.day, money: Math.round(S.money), job: S.job,
+    state: { energy: S.energy, health: S.health, skill: S.skill, slots: S.slots, strikes: S.strikes, finished: S.finished, log: S.log.slice(0, 8) }, updated_at: new Date().toISOString() };
 }
-function fromRow(r) {
-  const st = r.state || {};
-  return { day: r.day, money: Number(r.money), job: r.job, energy: st.energy ?? 100, health: st.health ?? 100, skill: st.skill ?? 0, slots: st.slots ?? SLOTS, strikes: st.strikes ?? 0, finished: !!st.finished, log: st.log || [] };
-}
+function fromRow(r) { const st = r.state || {}; return { day: r.day, money: Number(r.money), job: r.job, energy: st.energy ?? 100, health: st.health ?? 100, skill: st.skill ?? 0, slots: st.slots ?? SLOTS, strikes: st.strikes ?? 0, finished: !!st.finished, log: st.log || [] }; }
 function queueSave() { clearTimeout(saveT); saveT = setTimeout(saveNow, 800); }
 async function saveNow() {
-  clearTimeout(saveT);
-  if (!S || !me) return;
+  clearTimeout(saveT); if (!S || !me) return;
   const { error } = await sb.from('players').upsert(toRow());
   if (error) toast('Save problem: ' + error.message);
 }
-
 async function startGame(isNew) {
   $('auth').hidden = true; $('game').hidden = false;
   const { data, error } = await sb.from('players').select('*').eq('id', me.id).maybeSingle();
-  if (error) { toast('Could not load game: ' + error.message); }
-  if (data) { S = fromRow(data); } else { S = newState(); await saveNow(); }
-  scene = 'home'; lastMoney = null;
-  render(); loadBoard(); loadChat(); subscribe();
-  if (!data) showModal('🌴', 'Welcome to Akure, ' + me.username + '!', 'You have ' + naira(S.money) + ' and 120 days. Study, find a job, pay rent every 30 days, and watch your health.', 'Start playing');
+  if (error) toast('Could not load game: ' + error.message);
+  if (data) S = fromRow(data); else { S = newState(); await saveNow(); }
+  lastMoney = null; P.x = LOC.home.rx; P.y = LOC.home.ry + 10; resizeWorld();
+  render(); loadBoard(); loadChat(); subscribe(); openWorldChannel();
+  if (!data) showModal('🌴', 'Welcome to Akure, ' + me.username + '!', 'Walk your character around town. Drag on the map or use the pad to move. Walk into the glowing circles to act. Find a job, pay rent every 30 days, and sleep at home each night.', 'Start playing');
 }
 
 // ---------- actions ----------
 function say(txt) { S.log.unshift(txt); S.log = S.log.slice(0, 8); }
 function canAct() {
   if (S.finished) { toast('The 120 days are over!'); return false; }
-  if (S.slots < 1) { toast('No actions left today. Tap End day.'); bad(); return false; }
+  if (S.slots < 1) { toast("It's night. Walk home and sleep."); bad(); return false; }
   return true;
 }
 function jobObj() { return JOBS.find(j => j.id === S.job); }
-function clamp() { S.energy = Math.max(0, Math.min(100, S.energy)); S.health = Math.max(0, Math.min(100, S.health)); }
-function done() { clamp(); render(); hop(); queueSave(); }
-
-$('aWork').onclick = () => {
-  if (!canAct()) return;
-  const j = jobObj(); if (!j) { toast('Take a job first. Scroll to "Jobs in Akure".'); bad(); return; }
+function clampStats() { S.energy = clampN(S.energy, 0, 100); S.health = clampN(S.health, 0, 100); }
+function done() { clampStats(); P.bob = 1; render(); queueSave(); }
+function doWork() {
+  if (!canAct()) return; const j = jobObj();
+  if (!j) { toast('Take a job first'); return; }
+  if (!curLoc || curLoc.id !== j.loc) { toast('Your workplace is ' + LOC[j.loc].name); return; }
   if (S.energy < j.energy) { toast('Too tired to work. Rest or eat first.'); bad(); return; }
-  const pay = rand(j.pay[0], j.pay[1]);
-  S.money += pay; S.energy -= j.energy; S.slots--; goTo(j.scene);
+  const pay = rand(j.pay[0], j.pay[1]); S.money += pay; S.energy -= j.energy; S.slots--;
   say('💼 ' + j.name + ': you earned ' + naira(pay) + '.'); good(); done();
-};
-$('aStudy').onclick = () => {
+}
+function doStudy() {
   if (!canAct()) return;
   if (S.money < 1000) { toast('You need ₦1,000 to study'); bad(); return; }
   if (S.energy < 30) { toast('Too tired to study. Rest first.'); bad(); return; }
-  S.money -= 1000; S.energy -= 30; S.skill += 1; S.slots--; goTo('campus');
-  say('📚 You studied at a FUTA short course. Skill is now ' + S.skill + '.'); good(); done();
-};
-$('aHustle').onclick = () => {
+  S.money -= 1000; S.energy -= 30; S.skill += 1; S.slots--;
+  say('📚 You studied at FUTA. Skill is now ' + S.skill + '.'); good(); done();
+}
+function doHustle() {
   if (!canAct()) return;
   if (S.energy < 20) { toast('Too tired to hustle. Rest first.'); bad(); return; }
-  const r = rand(-1000, 4000); S.money += r; S.energy -= 20; S.slots--; goTo('market');
-  say(r >= 0 ? '🛵 Side hustle paid ' + naira(r) + '.' : '🛵 Side hustle went wrong. You lost ' + naira(-r) + '.');
-  (r >= 0 ? good : bad)(); done();
-};
-$('aRest').onclick = () => {
-  if (!canAct()) return;
-  S.energy += 30; S.health += 5; S.slots--; goTo('home');
-  say('😴 You rested at home and got your energy back.'); beep(440); done();
-};
-$('aEat').onclick = () => {
+  const r = rand(-1000, 4000); S.money += r; S.energy -= 20; S.slots--;
+  say(r >= 0 ? '🛵 Side hustle paid ' + naira(r) + '.' : '🛵 Side hustle went wrong. You lost ' + naira(-r) + '.'); (r >= 0 ? good : bad)(); done();
+}
+function doRest() { if (!canAct()) return; S.energy += 30; S.health += 5; S.slots--; say('😴 You rested at home and got your energy back.'); beep(440); done(); }
+function doEat() {
   if (!canAct()) return;
   if (S.money < 2500) { toast('Not enough money for a good meal'); bad(); return; }
-  S.money -= 2500; S.energy += 20; S.health += 15; S.slots--; goTo('market');
-  say('🍲 Pounded yam and egusi. You feel strong.'); good(); done();
-};
-$('aNext').onclick = () => { if (!S.finished) endDay(); };
-
+  S.money -= 2500; S.energy += 20; S.health += 15; S.slots--; say('🍲 Pounded yam and egusi. You feel strong.'); good(); done();
+}
+function takeJob(id) {
+  const j = JOBS.find(x => x.id === id);
+  if (S.skill < j.req) { toast('Study more first. You need skill ' + j.req + '.'); bad(); return; }
+  S.job = id; say('✅ New job: ' + j.name + '. Work at ' + LOC[j.loc].name + '.'); good(); done();
+}
 function dayFade(day) {
   $('dayfadeT').textContent = 'Day ' + day; $('dayfadeS').textContent = 'Akure wakes up';
-  const d = $('dayfade'); d.classList.remove('show'); void d.offsetWidth; d.classList.add('show');
-  setTimeout(() => d.classList.remove('show'), 1300);
+  const d = $('dayfade'); d.classList.remove('show'); void d.offsetWidth; d.classList.add('show'); setTimeout(() => d.classList.remove('show'), 1300);
 }
-
 function endDay() {
-  let ev = null;
-  if (S.money >= FOOD) { S.money -= FOOD; say('🍛 Daily food: ' + naira(FOOD) + '.'); }
-  else { S.health -= 15; say('😞 You could not afford food today. Health drops.'); }
-
+  if (S.finished) return; let ev = null;
+  if (S.money >= FOOD) { S.money -= FOOD; say('🍛 Daily food: ' + naira(FOOD) + '.'); } else { S.health -= 15; say('😞 You could not afford food today. Health drops.'); }
   if (S.day % 30 === 0) {
     if (S.money >= RENT) { S.money -= RENT; S.strikes = 0; say('🏠 Rent paid: ' + naira(RENT) + '.'); good(); }
     else { S.strikes++; say('🏠 You could not pay rent! Warning ' + S.strikes + ' of 2.'); bad(); showModal('🏠', 'Rent not paid', 'Your landlord is angry. Warning ' + S.strikes + ' of 2. Miss rent again and you are out.', 'I understand'); }
   }
   if (S.strikes >= 2 || S.health <= 0) {
-    S.finished = true; goTo('home');
-    const why = S.strikes >= 2 ? ['🚪', 'Thrown out', 'The landlord locked you out. Your run ends here.'] : ['🏥', 'Too weak to go on', 'Your health reached zero. Your run ends here.'];
-    say(why[0] + ' ' + why[2]); clamp(); render(); saveNow();
-    showModal(why[0], why[1], why[2] + ' You finished on day ' + S.day + ' with ' + naira(S.money) + '.', 'See my result'); return;
+    S.finished = true; const why = S.strikes >= 2 ? ['🚪', 'Thrown out', 'The landlord locked you out. Your run ends here.'] : ['🏥', 'Too weak to go on', 'Your health reached zero. Your run ends here.'];
+    say(why[0] + ' ' + why[2]); clampStats(); render(); saveNow(); showModal(why[0], why[1], why[2] + ' You finished on day ' + S.day + ' with ' + naira(S.money) + '.', 'See my result'); return;
   }
   if (S.day >= TOTAL_DAYS) {
-    S.finished = true; goTo('town'); say('🏁 120 days done! Final money: ' + naira(S.money) + '.'); good();
-    clamp(); render(); saveNow();
+    S.finished = true; say('🏁 120 days done! Final money: ' + naira(S.money) + '.'); good(); clampStats(); render(); saveNow();
     showModal('🏁', 'You made it!', 'All 120 days done. Final money: ' + naira(S.money) + '. Check the Board to see your rank.', 'See the Board'); return;
   }
-
-  S.day++; S.slots = SLOTS; goTo('town');
-  S.energy = S.health > 50 ? 100 : 70;
+  S.day++; S.slots = SLOTS; S.energy = S.health > 50 ? 100 : 70;
   if (Math.random() < 0.4) {
     ev = EVENTS[rand(0, EVENTS.length - 1)];
     if (ev.m) S.money += ev.m; if (ev.h) S.health += ev.h; if (ev.e) S.energy += ev.e;
-    say('⚡ ' + ev.t + '. ' + ev.b + (ev.m ? ' (' + (ev.m > 0 ? '+' : '-') + naira(Math.abs(ev.m)) + ')' : ''));
-    (ev.m > 0 || ev.h > 0 ? good : bad)();
-  } else { beep(330); }
+    say('⚡ ' + ev.t + '. ' + ev.b + (ev.m ? ' (' + (ev.m > 0 ? '+' : '-') + naira(Math.abs(ev.m)) + ')' : '')); (ev.m > 0 || ev.h > 0 ? good : bad)();
+  } else beep(330);
   if (S.money < 0) S.money = 0;
-  clamp(); render(); saveNow(); dayFade(S.day);
+  target = null; P.x = LOC.home.rx; P.y = LOC.home.ry + 10;
+  clampStats(); render(); saveNow(); dayFade(S.day);
   if (ev) setTimeout(() => showModal(ev.ic, ev.t, ev.b + (ev.m ? '  ' + (ev.m > 0 ? '+' : '-') + naira(Math.abs(ev.m)) : ''), 'OK'), 1250);
 }
 
-function takeJob(id) {
-  const j = JOBS.find(x => x.id === id);
-  if (S.skill < j.req) { toast('Study more first. You need skill ' + j.req + '.'); bad(); return; }
-  S.job = id; say('✅ New job: ' + j.name + '.'); good(); done();
-}
-
-// ---------- drawing ----------
-function mood() {
-  if (S.finished) return '🧑🏾';
-  if (S.health < 30) return '🤒';
-  if (S.energy < 20) return '🥱';
-  if (S.money > 150000) return '😎';
-  return '🧑🏾';
-}
+// ---------- HUD and Me tab ----------
 function render() {
   $('hDay').textContent = S.day + ' / ' + TOTAL_DAYS;
+  $('hPhase').textContent = PHASES[phaseNow()];
   $('hMoney').textContent = naira(S.money);
-  if (lastMoney !== null && S.money !== lastMoney) floatTxt(S.money - lastMoney);
+  if (lastMoney !== null && S.money !== lastMoney) floats.push({ t: 0, txt: (S.money > lastMoney ? '+' : '-') + naira(Math.abs(S.money - lastMoney)), up: S.money > lastMoney });
   lastMoney = S.money;
-  drawScene();
-  $('avatar').textContent = mood();
-  $('bE').style.width = S.energy + '%'; $('nE').textContent = S.energy;
-  $('bH').style.width = S.health + '%'; $('nH').textContent = S.health;
   const sk = Math.min(100, S.skill / 20 * 100);
-  $('bS').style.width = sk + '%'; $('nS').textContent = S.skill;
-  $('sSlots').textContent = S.slots;
-  const j = jobObj();
-  $('wTxt').textContent = j ? j.name + ' · ' + naira(j.pay[0]) + '+' : 'Get a job first';
+  $('mE').style.width = S.energy + '%'; $('mEn').textContent = S.energy; $('mH').style.width = S.health + '%'; $('mHn').textContent = S.health; $('mS').style.width = sk + '%'; $('mSn').textContent = S.skill;
+  $('bE').style.width = S.energy + '%'; $('nE').textContent = S.energy; $('bH').style.width = S.health + '%'; $('nH').textContent = S.health; $('bS').style.width = sk + '%'; $('nS').textContent = S.skill;
+  const j = jobObj(); let g;
+  if (S.finished) g = '🏁 Your run is over. Check the Board.';
+  else if (S.slots === 0) g = '🌙 Night. Walk home to Ijapo and sleep.';
+  else if (!j) g = '👉 Walk to Keke Park for a first job, or study at FUTA.';
+  else g = '👉 Work at ' + LOC[j.loc].name + ' · ' + S.slots + ' action' + (S.slots === 1 ? '' : 's') + ' left';
+  $('goal').textContent = g;
   const nextRent = Math.ceil(S.day / 30) * 30;
   $('sInfo').textContent = 'Rent of ' + naira(RENT) + ' is due at the end of day ' + nextRent + '. Food costs ' + naira(FOOD) + ' a day.' + (S.strikes ? ' Missed rent warnings: ' + S.strikes + ' of 2.' : '') + ' Skill 20 unlocks the best job.';
   $('jobs').innerHTML = '';
   JOBS.forEach(x => {
-    const d = document.createElement('div'); d.className = 'job';
-    const l = document.createElement('div');
-    const b1 = document.createElement('b'); b1.textContent = x.name + ' · ' + x.where;
-    const sm = document.createElement('small'); sm.textContent = naira(x.pay[0]) + ' to ' + naira(x.pay[1]) + ' a shift · needs skill ' + x.req;
-    l.append(b1, sm);
-    const b = document.createElement('button'); b.className = 'btn'; b.textContent = S.job === x.id ? 'Your job' : (S.skill < x.req ? 'Locked' : 'Take job');
-    b.disabled = S.skill < x.req || S.job === x.id || S.finished; b.onclick = () => takeJob(x.id);
-    d.append(l, b); $('jobs').appendChild(d);
+    const d = document.createElement('div'); d.className = 'job' + (S.job === x.id ? ' mine' : '');
+    const b = document.createElement('b'); b.textContent = x.name + (S.job === x.id ? ' (your job)' : '');
+    const s = document.createElement('small'); s.textContent = naira(x.pay[0]) + ' to ' + naira(x.pay[1]) + ' a shift · skill ' + x.req + ' · at ' + LOC[x.loc].name;
+    d.append(b, s); $('jobs').appendChild(d);
   });
-  $('log').innerHTML = '';
-  S.log.forEach(t => { const p = document.createElement('p'); p.textContent = t; $('log').appendChild(p); });
-  ['aWork', 'aStudy', 'aHustle', 'aRest', 'aEat', 'aNext'].forEach(id => $(id).disabled = S.finished);
+  $('log').innerHTML = ''; S.log.forEach(t => { const p = document.createElement('p'); p.textContent = t; $('log').appendChild(p); });
+  renderSheet();
 }
 
 // ---------- leaderboard ----------
 async function loadBoard() {
   const { data, error } = await sb.from('players').select('id,username,money,day,state').order('money', { ascending: false }).limit(50);
   if (error) { toast('Could not load the leaderboard'); return; }
-  playersCache = data || [];
-  const box = $('lb'); box.innerHTML = '';
-  const medal = ['🥇', '🥈', '🥉'];
+  playersCache = data || []; const box = $('lb'); box.innerHTML = ''; const medal = ['🥇', '🥈', '🥉'];
   playersCache.forEach((p, i) => {
     const d = document.createElement('div'); d.className = 'lb' + (p.id === me.id ? ' me' : '');
     const rk = document.createElement('div'); rk.className = 'rk'; rk.textContent = medal[i] || (i + 1);
     const nm = document.createElement('div'); const b = document.createElement('b'); b.textContent = p.username + (p.id === me.id ? ' (you)' : '');
-    const sm = document.createElement('small'); sm.textContent = 'Day ' + p.day + (p.state && p.state.finished ? ' · finished' : '');
-    nm.append(b, sm);
-    const am = document.createElement('div'); am.className = 'amt'; am.textContent = naira(p.money);
-    d.append(rk, nm, am); box.appendChild(d);
+    const sm = document.createElement('small'); sm.textContent = 'Day ' + p.day + (p.state && p.state.finished ? ' · finished' : ''); nm.append(b, sm);
+    const am = document.createElement('div'); am.className = 'amt'; am.textContent = naira(p.money); d.append(rk, nm, am); box.appendChild(d);
   });
   const sel = $('giftTo'); const keep = sel.value; sel.innerHTML = '';
-  playersCache.filter(p => p.id !== me.id).forEach(p => {
-    const o = document.createElement('option'); o.value = p.id; o.textContent = p.username; sel.appendChild(o);
-  });
+  playersCache.filter(p => p.id !== me.id).forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.username; sel.appendChild(o); });
   if (keep) sel.value = keep;
 }
 function loadBoardSoon() { clearTimeout(lbT); lbT = setTimeout(loadBoard, 1200); }
 
 // ---------- chat ----------
-function addMsg(m) {
+function addMsg(m, live) {
   const mine = m.user_id === me.id;
   const d = document.createElement('div'); d.className = 'bub' + (mine ? ' mine' : '');
   const b = document.createElement('b'); b.textContent = mine ? 'You' : m.username;
-  const t = document.createElement('i'); t.textContent = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  b.appendChild(t);
-  const s = document.createElement('span'); s.textContent = m.body;
-  d.append(b, s);
+  const t = document.createElement('i'); t.textContent = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); b.appendChild(t);
+  const s = document.createElement('span'); s.textContent = m.body; d.append(b, s);
   const box = $('chat'); box.appendChild(d); box.scrollTop = box.scrollHeight;
+  if (live) {
+    const bubble = { text: m.body, until: performance.now() + 6000 };
+    if (mine) P.bubble = bubble; else if (others[m.user_id]) others[m.user_id].bubble = bubble;
+  }
 }
 async function loadChat() {
   const { data } = await sb.from('messages').select('*').order('created_at', { ascending: false }).limit(50);
-  $('chat').innerHTML = ''; (data || []).reverse().forEach(addMsg);
+  $('chat').innerHTML = ''; (data || []).reverse().forEach(m => addMsg(m, false));
 }
 async function sendChat() {
-  const body = $('chatIn').value.trim(); if (!body) return;
-  $('chatIn').value = '';
+  const body = $('chatIn').value.trim(); if (!body) return; $('chatIn').value = '';
   const { error } = await sb.from('messages').insert({ username: me.username, body });
   if (error) toast('Message not sent: ' + error.message);
 }
@@ -622,29 +832,25 @@ $('giftBtn').onclick = async () => {
   if (error) { toast(error.message); bad(); return; }
   S.money -= amt; $('giftAmt').value = '';
   const name = $('giftTo').selectedOptions[0].textContent;
-  say('🎁 You gave ' + naira(amt) + ' to ' + name + '.'); good(); render(); loadBoardSoon();
-  toast('Sent ' + naira(amt) + ' to ' + name);
+  say('🎁 You gave ' + naira(amt) + ' to ' + name + '.'); good(); render(); loadBoardSoon(); toast('Sent ' + naira(amt) + ' to ' + name);
 };
 
 // ---------- live updates ----------
 function subscribe() {
-  const c1 = sb.channel('akure-chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, p => addMsg(p.new)).subscribe();
+  const c1 = sb.channel('akure-chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, p => addMsg(p.new, true)).subscribe();
   const c2 = sb.channel('akure-players').on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, loadBoardSoon).subscribe();
   const c3 = sb.channel('akure-gifts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gifts' }, p => {
-    if (p.new.to_id === me.id) {
-      S.money += Number(p.new.amount);
-      say('🎁 A friend sent you ' + naira(p.new.amount) + '!'); good(); render(); queueSave();
-      toast('🎁 You received ' + naira(p.new.amount));
-    }
+    if (p.new.to_id === me.id) { S.money += Number(p.new.amount); say('🎁 A friend sent you ' + naira(p.new.amount) + '!'); good(); render(); queueSave(); toast('🎁 You received ' + naira(p.new.amount)); }
   }).subscribe();
-  chans = [c1, c2, c3];
+  chans.push(c1, c2, c3);
 }
 
 // ---------- tabs & sound ----------
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
-  ['play', 'board', 'chat', 'gift'].forEach(t => $('tab-' + t).hidden = (t !== b.dataset.tab));
-  window.scrollTo(0, 0);
+  ['play', 'me', 'board', 'chat', 'gift'].forEach(t => $('tab-' + t).hidden = (t !== b.dataset.tab));
+  window.scrollTo(0, 0); target = null; joy = { x: 0, y: 0 };
+  if (b.dataset.tab === 'play') setTimeout(resizeWorld, 0);
   if (b.dataset.tab === 'board') loadBoard();
   if (b.dataset.tab === 'chat') { const box = $('chat'); box.scrollTop = box.scrollHeight; }
 });
