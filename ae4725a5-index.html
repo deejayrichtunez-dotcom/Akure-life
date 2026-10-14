@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Akure Life</title>
+<style>
+  :root{--bg:#0f1b14;--card:#17281e;--card2:#1f3628;--text:#eef6ef;--muted:#9bb5a2;--accent:#f5b83d;--good:#4ade80;--bad:#f87171;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:80px}
+  h1,h2,h3{margin:0 0 8px}
+  .wrap{max-width:560px;margin:0 auto;padding:14px}
+  .card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px}
+  .banner{background:linear-gradient(135deg,#1f6b3a,#0f3d22);border-radius:14px;padding:14px;margin-bottom:12px}
+  .banner small{color:#cfe8d4}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{flex:1 1 45%;background:var(--card2);border-radius:10px;padding:8px 10px}
+  .stat b{display:block;font-size:18px}
+  .stat span{font-size:12px;color:var(--muted)}
+  input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #2e4a38;background:#0f1b14;color:var(--text);font-size:16px;margin-bottom:8px}
+  button{background:var(--accent);color:#1b1400;border:0;border-radius:10px;padding:12px 14px;font-size:15px;font-weight:700;cursor:pointer}
+  button.alt{background:var(--card2);color:var(--text)}
+  button:disabled{opacity:.45}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .log p{margin:4px 0;font-size:14px;color:var(--muted)}
+  .log p:first-child{color:var(--text)}
+  .good{color:var(--good)} .bad{color:var(--bad)}
+  .lb-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2a4433;font-size:15px}
+  .chat-box{height:48vh;overflow-y:auto;background:var(--card2);border-radius:10px;padding:8px;margin-bottom:8px}
+  .msg{margin:6px 0;font-size:14px;word-wrap:break-word}
+  .msg b{color:var(--accent)} .msg i{color:var(--muted);font-size:11px;margin-left:6px;font-style:normal}
+  nav{position:fixed;bottom:0;left:0;right:0;background:#0b140f;display:flex;border-top:1px solid #2a4433}
+  nav button{flex:1;border-radius:0;background:transparent;color:var(--muted);padding:16px 4px;font-size:14px}
+  nav button.on{color:var(--accent);border-top:3px solid var(--accent)}
+  #toast{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000c;padding:10px 16px;border-radius:10px;z-index:9;display:none;max-width:90%;text-align:center}
+  .job{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #2a4433;font-size:14px}
+  .job small{color:var(--muted);display:block}
+  .tiny{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="auth">
+    <div class="banner"><h1>🌴 Akure Life</h1><small>Survive 120 days in Akure. Work, pay rent, stay alive, top the leaderboard.</small></div>
+    <div class="card">
+      <h3>Join or log in</h3>
+      <input id="u" placeholder="Username (letters, numbers, _ )" autocapitalize="none" autocomplete="username">
+      <input id="p" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+      <div class="row">
+        <button id="btnLogin">Log in</button>
+        <button id="btnSignup" class="alt">Create account</button>
+      </div>
+      <p class="tiny">No email needed. Remember your password: there is no reset yet.</p>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" hidden>
+    <div id="tab-play">
+      <div class="banner">
+        <h2 id="place">🌴 Akure</h2>
+        <small id="who"></small>
+      </div>
+      <div class="card">
+        <div class="row">
+          <div class="stat"><span>Day</span><b id="sDay"></b></div>
+          <div class="stat"><span>Money</span><b id="sMoney"></b></div>
+          <div class="stat"><span>Energy</span><b id="sEnergy"></b></div>
+          <div class="stat"><span>Health</span><b id="sHealth"></b></div>
+          <div class="stat"><span>Skill</span><b id="sSkill"></b></div>
+          <div class="stat"><span>Job</span><b id="sJob"></b></div>
+        </div>
+        <p class="tiny" id="sInfo"></p>
+      </div>
+      <div class="card">
+        <h3>Today's actions (<span id="sSlots"></span> left)</h3>
+        <div class="actions">
+          <button id="aWork">💼 Work a shift</button>
+          <button id="aStudy">📚 Study (₦1,000)</button>
+          <button id="aHustle">🛵 Side hustle</button>
+          <button id="aRest">😴 Rest</button>
+          <button id="aEat" class="alt">🍲 Good meal (₦2,500)</button>
+          <button id="aNext" class="alt">🌙 End day</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Jobs in Akure</h3>
+        <div id="jobs"></div>
+      </div>
+      <div class="card log"><h3>What happened</h3><div id="log"></div></div>
+      <div class="card" id="endCard" hidden></div>
+      <div class="row">
+        <button class="alt" id="btnSound">🔊 Sound on</button>
+        <button class="alt" id="btnLogout">Log out</button>
+      </div>
+    </div>
+
+    <div id="tab-board" hidden>
+      <div class="card"><h2>🏆 Leaderboard</h2><div id="lb"></div></div>
+    </div>
+
+    <div id="tab-chat" hidden>
+      <div class="card"><h2>💬 Chat</h2>
+        <div class="chat-box" id="chat"></div>
+        <div class="row"><input id="chatIn" placeholder="Say something..." maxlength="300" style="flex:1"><button id="chatSend">Send</button></div>
+      </div>
+    </div>
+
+    <div id="tab-gift" hidden>
+      <div class="card"><h2>🎁 Gift money</h2>
+        <select id="giftTo"></select>
+        <input id="giftAmt" type="number" inputmode="numeric" placeholder="Amount in ₦">
+        <button id="giftBtn">Send gift</button>
+        <p class="tiny">Money leaves your account straight away.</p>
+      </div>
+    </div>
+
+    <nav>
+      <button data-tab="play" class="on">🎮 Play</button>
+      <button data-tab="board">🏆 Board</button>
+      <button data-tab="chat">💬 Chat</button>
+      <button data-tab="gift">🎁 Gift</button>
+    </nav>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ====== YOUR SUPABASE DETAILS (safe to be public) ======
+const SUPABASE_URL = 'https://vhsvegqvwjtqrghqkldl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_OxNSBjW5OSqfKBp33lmy0A_g1u7LU2Y';
+// =======================================================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const naira = n => '₦' + Math.round(n).toLocaleString('en-NG');
+const rand = (a, b) => Math.floor(a + Math.random() * (b - a + 1));
+const TOTAL_DAYS = 120, RENT = 15000, FOOD = 1500, SLOTS = 3;
+
+const JOBS = [
+  { id: 'keke',    name: 'Keke rider (Oja Oba)',          pay: [3000, 5500],   energy: 35, req: 0 },
+  { id: 'shop',    name: 'Shop attendant (Isikan Market)',pay: [4000, 6500],   energy: 30, req: 2 },
+  { id: 'teacher', name: 'Teacher (private school)',      pay: [6000, 9000],   energy: 30, req: 6 },
+  { id: 'civil',   name: 'Civil servant (Alagbaka)',      pay: [9000, 13000],  energy: 25, req: 12 },
+  { id: 'dev',     name: 'Software developer (remote)',   pay: [15000, 26000], energy: 30, req: 20 },
+];
+const PLACES = ['Oja Oba 🛍️','FUTA Gate 🎓','Alagbaka 🏛️','Isikan Market 🍅','Oba Adesida Road 🚗','Ijapo Estate 🏡','Arakale 🚌','Cocoa Rd 🌿'];
+const EVENTS = [
+  { t: 'NEPA took light. You bought fuel for the generator.', m: -2000 },
+  { t: 'You found money in an old trouser pocket!', m: 1500 },
+  { t: 'Cousin visited from Lagos. You entertained him.', m: -3000 },
+  { t: 'A customer gave you a generous tip.', m: 2000 },
+  { t: 'Malaria caught you. Hospital and drugs.', m: -3000, h: -20 },
+  { t: 'Wedding aso-ebi contribution. Wahala.', m: -4000 },
+  { t: 'Surprise bonus from a client!', m: 5000 },
+  { t: 'Rain fell all day. You were stuck indoors.', e: -15 },
+  { t: 'Neighbour shared jollof rice. You feel strong.', h: 10 },
+  { t: 'Fuel price jumped. Transport cost more.', m: -1500 },
+  { t: 'You sold old items online.', m: 2500 },
+  { t: 'Church/mosque community gave you food support.', m: 1000, h: 5 },
+];
+
+let me = null, S = null, chans = [], saveT = null, soundOn = true, playersCache = [], lbT = null;
+
+// ---------- sound ----------
+let ac = null;
+function beep(f, d = 0.12) {
+  if (!soundOn) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = f; g.gain.value = 0.05;
+    o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
+  } catch (e) {}
+}
+const good = () => { beep(660); setTimeout(() => beep(880), 110); };
+const bad = () => beep(200, 0.25);
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 3500);
+}
+
+// ---------- auth ----------
+function cleanName() {
+  const u = $('u').value.trim().toLowerCase();
+  if (!/^[a-z0-9_]{3,20}$/.test(u)) { toast('Username: 3-20 letters, numbers or _ only'); return null; }
+  if ($('p').value.length < 6) { toast('Password must be 6+ characters'); return null; }
+  return u;
+}
+const emailOf = u => u + '@akurelife.app';
+
+$('btnSignup').onclick = async () => {
+  const u = cleanName(); if (!u) return;
+  const { data, error } = await sb.auth.signUp({ email: emailOf(u), password: $('p').value });
+  if (error) { toast(/registered|exists/i.test(error.message) ? 'That username is taken' : error.message); return; }
+  if (!data.session) { toast('Account made but no session. Check that "Confirm email" is OFF in Supabase.'); return; }
+  me = { id: data.user.id, username: u };
+  startGame(true);
+};
+$('btnLogin').onclick = async () => {
+  const u = cleanName(); if (!u) return;
+  const { data, error } = await sb.auth.signInWithPassword({ email: emailOf(u), password: $('p').value });
+  if (error) { toast('Wrong username or password'); return; }
+  me = { id: data.user.id, username: u };
+  startGame(false);
+};
+$('btnLogout').onclick = async () => {
+  await saveNow();
+  chans.forEach(c => sb.removeChannel(c)); chans = [];
+  await sb.auth.signOut();
+  location.reload();
+};
+
+(async function boot() {
+  const { data } = await sb.auth.getSession();
+  if (data.session) {
+    const email = data.session.user.email || '';
+    me = { id: data.session.user.id, username: email.split('@')[0] };
+    startGame(false);
+  }
+})();
+
+// ---------- game state ----------
+function newState() {
+  return { day: 1, money: 20000, energy: 100, health: 100, skill: 0, slots: SLOTS, strikes: 0, job: null, finished: false, log: ['Welcome to Akure! You have ' + naira(20000) + ' and a room in Ijapo.'] };
+}
+function toRow() {
+  return {
+    id: me.id, username: me.username, day: S.day, money: Math.round(S.money), job: S.job,
+    state: { energy: S.energy, health: S.health, skill: S.skill, slots: S.slots, strikes: S.strikes, finished: S.finished, log: S.log.slice(0, 8) },
+    updated_at: new Date().toISOString()
+  };
+}
+function fromRow(r) {
+  const st = r.state || {};
+  return { day: r.day, money: Number(r.money), job: r.job, energy: st.energy ?? 100, health: st.health ?? 100, skill: st.skill ?? 0, slots: st.slots ?? SLOTS, strikes: st.strikes ?? 0, finished: !!st.finished, log: st.log || [] };
+}
+function queueSave() { clearTimeout(saveT); saveT = setTimeout(saveNow, 800); }
+async function saveNow() {
+  clearTimeout(saveT);
+  if (!S || !me) return;
+  const { error } = await sb.from('players').upsert(toRow());
+  if (error) toast('Save problem: ' + error.message);
+}
+
+async function startGame(isNew) {
+  $('auth').hidden = true; $('game').hidden = false;
+  $('who').textContent = 'Playing as ' + me.username;
+  const { data, error } = await sb.from('players').select('*').eq('id', me.id).maybeSingle();
+  if (error) { toast('Could not load game: ' + error.message); }
+  if (data) { S = fromRow(data); } else { S = newState(); await saveNow(); }
+  render(); loadBoard(); loadChat(); subscribe();
+}
+
+// ---------- actions ----------
+function say(txt) { S.log.unshift(txt); S.log = S.log.slice(0, 8); }
+function canAct() {
+  if (S.finished) { toast('The 120 days are over!'); return false; }
+  if (S.slots < 1) { toast('No actions left today. Tap End day.'); bad(); return false; }
+  return true;
+}
+function jobObj() { return JOBS.find(j => j.id === S.job); }
+function clamp() { S.energy = Math.max(0, Math.min(100, S.energy)); S.health = Math.max(0, Math.min(100, S.health)); }
+function done() { clamp(); render(); queueSave(); }
+
+$('aWork').onclick = () => {
+  if (!canAct()) return;
+  const j = jobObj(); if (!j) { toast('Pick a job first (see Jobs below)'); return; }
+  if (S.energy < j.energy) { toast('Too tired. Rest or eat first.'); bad(); return; }
+  const pay = rand(j.pay[0], j.pay[1]);
+  S.money += pay; S.energy -= j.energy; S.slots--;
+  say('💼 ' + j.name + ': you earned ' + naira(pay) + '.'); good(); done();
+};
+$('aStudy').onclick = () => {
+  if (!canAct()) return;
+  if (S.money < 1000) { toast('You need ₦1,000 to study'); bad(); return; }
+  if (S.energy < 30) { toast('Too tired to study'); bad(); return; }
+  S.money -= 1000; S.energy -= 30; S.skill += 1; S.slots--;
+  say('📚 You studied at a FUTA short course. Skill is now ' + S.skill + '.'); good(); done();
+};
+$('aHustle').onclick = () => {
+  if (!canAct()) return;
+  if (S.energy < 20) { toast('Too tired to hustle'); bad(); return; }
+  const r = rand(-1000, 4000); S.money += r; S.energy -= 20; S.slots--;
+  say(r >= 0 ? '🛵 Side hustle paid ' + naira(r) + '.' : '🛵 Side hustle went wrong. You lost ' + naira(-r) + '.');
+  (r >= 0 ? good : bad)(); done();
+};
+$('aRest').onclick = () => {
+  if (!canAct()) return;
+  S.energy += 30; S.health += 5; S.slots--;
+  say('😴 You rested at home. Energy up.'); beep(440); done();
+};
+$('aEat').onclick = () => {
+  if (!canAct()) return;
+  if (S.money < 2500) { toast('Not enough money for a good meal'); bad(); return; }
+  S.money -= 2500; S.energy += 20; S.health += 15; S.slots--;
+  say('🍲 Pounded yam and egusi. You feel strong.'); good(); done();
+};
+$('aNext').onclick = () => {
+  if (S.finished) return;
+  endDay();
+};
+
+function endDay() {
+  // food
+  if (S.money >= FOOD) { S.money -= FOOD; say('🍛 Daily food cost: ' + naira(FOOD) + '.'); }
+  else { S.health -= 15; say('😞 You could not afford food today. Health drops.'); }
+
+  // rent every 30 days
+  if (S.day % 30 === 0) {
+    if (S.money >= RENT) { S.money -= RENT; S.strikes = 0; say('🏠 Rent paid: ' + naira(RENT) + '.'); good(); }
+    else { S.strikes++; say('🏠 You could not pay rent! Warning ' + S.strikes + ' of 2.'); bad(); }
+  }
+  if (S.strikes >= 2 || S.health <= 0) {
+    S.finished = true; say(S.strikes >= 2 ? '🚪 The landlord threw you out. Game over.' : '🏥 Your health reached zero. Game over.');
+    clamp(); render(); saveNow(); return;
+  }
+  if (S.day >= TOTAL_DAYS) {
+    S.finished = true; say('🏁 120 days done! Final money: ' + naira(S.money) + '.'); good();
+    clamp(); render(); saveNow(); return;
+  }
+
+  // next day
+  S.day++; S.slots = SLOTS;
+  S.energy = S.health > 50 ? 100 : 70;
+  if (Math.random() < 0.4) {
+    const ev = EVENTS[rand(0, EVENTS.length - 1)];
+    if (ev.m) S.money += ev.m; if (ev.h) S.health += ev.h; if (ev.e) S.energy += ev.e;
+    say('⚡ ' + ev.t + (ev.m ? ' (' + (ev.m > 0 ? '+' : '') + naira(ev.m) + ')' : ''));
+    (ev.m > 0 || ev.h > 0 ? good : bad)();
+  } else { beep(330); }
+  if (S.money < 0) S.money = 0;
+  clamp(); render(); saveNow();
+}
+
+function takeJob(id) {
+  const j = JOBS.find(x => x.id === id);
+  if (S.skill < j.req) { toast('Study more first (need skill ' + j.req + ')'); bad(); return; }
+  S.job = id; say('✅ You now work as: ' + j.name + '.'); good(); done();
+}
+
+// ---------- drawing ----------
+function render() {
+  $('place').textContent = '🌴 Akure · ' + PLACES[S.day % PLACES.length];
+  $('sDay').textContent = S.day + ' / ' + TOTAL_DAYS;
+  $('sMoney').textContent = naira(S.money);
+  $('sEnergy').textContent = S.energy;
+  $('sHealth').textContent = S.health;
+  $('sSkill').textContent = S.skill;
+  $('sJob').textContent = S.job ? jobObj().name.split(' (')[0] : 'None';
+  $('sSlots').textContent = S.slots;
+  const nextRent = Math.ceil(S.day / 30) * 30;
+  $('sInfo').textContent = 'Rent of ' + naira(RENT) + ' is due at the end of day ' + nextRent + '. Food costs ' + naira(FOOD) + '/day.' + (S.strikes ? ' ⚠️ Missed rent warnings: ' + S.strikes : '');
+  $('jobs').innerHTML = '';
+  JOBS.forEach(j => {
+    const d = document.createElement('div'); d.className = 'job';
+    d.innerHTML = '<div>' + j.name + '<small>' + naira(j.pay[0]) + ' - ' + naira(j.pay[1]) + ' per shift · skill ' + j.req + ' needed</small></div>';
+    const b = document.createElement('button'); b.textContent = S.job === j.id ? 'Current' : 'Take';
+    b.disabled = S.skill < j.req || S.job === j.id; b.onclick = () => takeJob(j.id);
+    d.appendChild(b); $('jobs').appendChild(d);
+  });
+  $('log').innerHTML = '';
+  S.log.forEach(l => { const p = document.createElement('p'); p.textContent = l; $('log').appendChild(p); });
+  ['aWork','aStudy','aHustle','aRest','aEat'].forEach(id => $(id).disabled = S.finished);
+  $('aNext').disabled = S.finished;
+  const end = $('endCard');
+  if (S.finished) {
+    end.hidden = false;
+    end.innerHTML = '<h2>🏁 Game over</h2><p>Your final money: <b>' + naira(S.money) + '</b> on day ' + S.day + '. Check the Board tab to see how you rank!</p>';
+  } else end.hidden = true;
+}
+
+// ---------- leaderboard ----------
+async function loadBoard() {
+  const { data, error } = await sb.from('players').select('id,username,money,day,state').order('money', { ascending: false }).limit(50);
+  if (error) { toast('Leaderboard problem'); return; }
+  playersCache = data || [];
+  const box = $('lb'); box.innerHTML = '';
+  playersCache.forEach((p, i) => {
+    const d = document.createElement('div'); d.className = 'lb-row';
+    const left = document.createElement('span');
+    left.textContent = (i + 1) + '. ' + p.username + (p.id === me.id ? ' (you)' : '') + (p.state && p.state.finished ? ' 🏁' : '');
+    const right = document.createElement('span'); right.textContent = naira(p.money) + ' · day ' + p.day;
+    d.append(left, right); box.appendChild(d);
+  });
+  const sel = $('giftTo'); const keep = sel.value; sel.innerHTML = '';
+  playersCache.filter(p => p.id !== me.id).forEach(p => {
+    const o = document.createElement('option'); o.value = p.id; o.textContent = p.username; sel.appendChild(o);
+  });
+  if (keep) sel.value = keep;
+}
+function loadBoardSoon() { clearTimeout(lbT); lbT = setTimeout(loadBoard, 1200); }
+
+// ---------- chat ----------
+function addMsg(m) {
+  const d = document.createElement('div'); d.className = 'msg';
+  const b = document.createElement('b'); b.textContent = m.username;
+  const t = document.createElement('i'); t.textContent = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const s = document.createElement('span'); s.textContent = ' ' + m.body;
+  d.append(b, t, document.createElement('br'), s);
+  const box = $('chat'); box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+async function loadChat() {
+  const { data } = await sb.from('messages').select('*').order('created_at', { ascending: false }).limit(50);
+  $('chat').innerHTML = ''; (data || []).reverse().forEach(addMsg);
+}
+async function sendChat() {
+  const body = $('chatIn').value.trim(); if (!body) return;
+  $('chatIn').value = '';
+  const { error } = await sb.from('messages').insert({ username: me.username, body });
+  if (error) toast('Message not sent: ' + error.message);
+}
+$('chatSend').onclick = sendChat;
+$('chatIn').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+// ---------- gifts ----------
+$('giftBtn').onclick = async () => {
+  const to = $('giftTo').value, amt = Math.floor(Number($('giftAmt').value));
+  if (!to) { toast('Pick a player'); return; }
+  if (!amt || amt <= 0) { toast('Enter an amount'); return; }
+  if (amt > S.money) { toast('You do not have that much'); bad(); return; }
+  await saveNow(); // make sure database matches before moving money
+  const { error } = await sb.rpc('send_gift', { to_player: to, gift_amount: amt });
+  if (error) { toast(error.message); bad(); return; }
+  S.money -= amt; $('giftAmt').value = '';
+  const name = $('giftTo').selectedOptions[0].textContent;
+  say('🎁 You gifted ' + naira(amt) + ' to ' + name + '.'); good(); render(); loadBoardSoon();
+};
+
+// ---------- live updates ----------
+function subscribe() {
+  const c1 = sb.channel('akure-chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, p => addMsg(p.new)).subscribe();
+  const c2 = sb.channel('akure-players').on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, loadBoardSoon).subscribe();
+  const c3 = sb.channel('akure-gifts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'gifts' }, p => {
+    if (p.new.to_id === me.id) {
+      S.money += Number(p.new.amount);
+      say('🎁 You received a gift of ' + naira(p.new.amount) + '!'); good(); render(); queueSave();
+    }
+  }).subscribe();
+  chans = [c1, c2, c3];
+}
+
+// ---------- tabs & sound button ----------
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
+  ['play', 'board', 'chat', 'gift'].forEach(t => $('tab-' + t).hidden = (t !== b.dataset.tab));
+  if (b.dataset.tab === 'board') loadBoard();
+  if (b.dataset.tab === 'chat') { const box = $('chat'); box.scrollTop = box.scrollHeight; }
+});
+$('btnSound').onclick = () => { soundOn = !soundOn; $('btnSound').textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off'; };
+window.addEventListener('beforeunload', () => { if (S && me) saveNow(); });
+</script>
+</body>
+</html>
